@@ -72,6 +72,9 @@ class Entity(models.Model):
     
     class Meta:
         db_table = f'{project_name}entities'
+        
+    def __str__(self):
+        return self.name
 
 def get_upload_reports(instance, filename):
     ext = os.path.splitext(filename)[-1]
@@ -102,6 +105,9 @@ class Report(models.Model):
     
     class Meta:
         db_table = f'{project_name}reports'
+        
+    def __str__(self):
+        return self.name
 
 class Notice(models.Model):
     report = models.ForeignKey(Report, null=True, blank=True, on_delete=models.CASCADE, related_name='notices')

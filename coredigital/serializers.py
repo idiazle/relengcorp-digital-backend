@@ -80,6 +80,8 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'entity',
+            'name',
+            'execution_date',
             'program',
             'task_type',
             'execution_status',
@@ -98,7 +100,7 @@ class ReportSerializer(serializers.ModelSerializer):
             'attachment': {'required': False, 'allow_null': True},
             'name': {'required': False, 'allow_null': True, 'allow_blank': True},
             'observations': {'required': False, 'allow_null': True, 'allow_blank': True},
-            'execution_date': {'required': False, 'allow_null': True, 'allow_blank': True},
+            'execution_date': {'required': False, 'allow_null': True},
             'diagnostic': {'required': False, 'allow_null': True},
             'recomendations': {'required': False, 'allow_null': True},
         }
