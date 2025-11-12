@@ -87,6 +87,7 @@ class ReportSerializer(serializers.ModelSerializer):
             'execution_status',
             'observations',
             'condition',
+            'attachment',
             'diagnostic',
             'recomendations',
             'created_by',
