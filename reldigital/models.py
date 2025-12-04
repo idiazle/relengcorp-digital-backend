@@ -79,18 +79,15 @@ class Entity(models.Model):
 def get_upload_reports(instance, filename):
     ext = os.path.splitext(filename)[-1]
     file_name = os.path.splitext(filename)[0]
-    file_path = os.path.join("reports",
-        str(instance.id),
-        str(file_name) + ext  
-    )
-    return file_path
+    return os.path.join("reports", str(instance.id or "temp"), f"{file_name}{ext}")
 
 class Report(models.Model):
     entity = models.ForeignKey(Entity, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, null=True, blank=True)
     attachment = models.FileField(upload_to=get_upload_reports, null=True, blank=True)
     program = models.IntegerField(choices=[(1, 'Programado'), (2, 'No programado')], default=1)
-    task_type = models.IntegerField(choices=[(1, 'PDM'), (2, 'NDT'), (3, 'AL'), (4, 'IV')], default=1)
+    service_type = models.IntegerField(null=True, blank=True)
+    task_type = models.IntegerField(null=True, blank=True)
     execution_status = models.IntegerField(choices=[(1, 'Ejecutado'), (2, 'No ejecutado') ], default=1)
     execution_date = models.DateTimeField(blank=True, null=True) 
     observations = models.TextField(null=True, blank=True)
