@@ -4,6 +4,9 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from reldigital.models import User, Entity, Report, Notice
 from .serializers import UserSerializer, EntitySerializer, ReportSerializer, NoticeSerializer
+from django.db.models import OuterRef, Subquery
+from django.utils import timezone
+from datetime import timedelta
 
 
 # ======================
@@ -154,3 +157,99 @@ class NoticeAPIView(APIView):
         notice.deleted = True
         notice.save()
         return Response({"message": "Aviso eliminado correctamente"}, status=status.HTTP_204_NO_CONTENT)
+
+# ======================
+#       ADDITIONAL VIEWS
+# ======================
+
+class EquipmentConditionSummaryAPIView(APIView):
+     def get(self, request):
+        # Subquery para obtener la última condición del equipo
+        last_report = (
+            Report.objects
+            .filter(entity=OuterRef("pk"), deleted=False)
+            .order_by("-created_at")
+        )
+
+        equipos = (
+            Entity.objects
+            .filter(type=3, deleted=False)
+            .annotate(
+                last_condition=Subquery(last_report.values("condition")[:1])
+            )
+        )
+        # Inicializar conteo
+        summary = {
+            "c1": 0,
+            "c2": 0,
+            "c3": 0,
+            "c4": 0,
+        }
+        for equipo in equipos:
+            if equipo.last_condition == 1:
+                summary["c1"] += 1
+            elif equipo.last_condition == 2:
+                summary["c2"] += 1
+            elif equipo.last_condition == 3:
+                summary["c3"] += 1
+            elif equipo.last_condition == 4:
+                summary["c4"] += 1
+
+        return Response(summary, status=status.HTTP_200_OK)
+     
+
+class EquipmentConditionByMonthAPIView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+
+        # Generar los últimos 7 meses (YYYY-MM)
+        months = []
+        for i in range(6, -1, -1):
+            month = (today.replace(day=1) - timedelta(days=30 * i))
+            months.append(month.strftime("%Y-%m"))
+
+        # Inicializar estructura
+        result = {
+            month: {
+                "c1": 0,
+                "c2": 0,
+                "c3": 0,
+                "c4": 0,
+            }
+            for month in months
+        }
+
+        # Equipos
+        equipos = Entity.objects.filter(type=3, deleted=False)
+
+        for month in months:
+            year, m = map(int, month.split("-"))
+
+            start_date = timezone.datetime(year, m, 1, tzinfo=timezone.get_current_timezone())
+
+            if m == 12:
+                end_date = timezone.datetime(year + 1, 1, 1, tzinfo=timezone.get_current_timezone())
+            else:
+                end_date = timezone.datetime(year, m + 1, 1, tzinfo=timezone.get_current_timezone())
+
+            # Último reporte del equipo en ese mes
+            last_report = (
+                Report.objects
+                .filter(
+                    entity=OuterRef("pk"),
+                    deleted=False,
+                    created_at__gte=start_date,
+                    created_at__lt=end_date,
+                )
+                .order_by("-created_at")
+            )
+
+            equipos_mes = equipos.annotate(
+                last_condition=Subquery(last_report.values("condition")[:1])
+            )
+
+            for e in equipos_mes:
+                if e.last_condition:
+                    result[month][f"c{e.last_condition}"] += 1
+
+        return Response(result, status=status.HTTP_200_OK)

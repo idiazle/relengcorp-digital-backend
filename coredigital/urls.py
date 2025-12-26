@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from .views import UserAPIView, EntityAPIView, ReportAPIView, NoticeAPIView, NoticesByReportApiView
+from .views import UserAPIView, EntityAPIView, ReportAPIView, NoticeAPIView, NoticesByReportApiView, EquipmentConditionSummaryAPIView,EquipmentConditionByMonthAPIView
 
 urlpatterns = [
     path('api/admin', admin.site.urls),
@@ -40,6 +40,8 @@ urlpatterns = [
     
     #OTHERS
     path('api/notices-by-report/<int:pk>', NoticesByReportApiView.as_view()),
+    path('api/summary-conditions', EquipmentConditionSummaryAPIView.as_view()),
+    path('api/equipments/conditions-by-month',EquipmentConditionByMonthAPIView.as_view()),
     
 ]
 if settings.DEBUG:
