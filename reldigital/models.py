@@ -48,6 +48,8 @@ def get_upload_entity(instance, filename):
         1: "plants",
         2: "areas",
         3: "equipments",
+        4: "components",
+        5: "subcomponents",
     }
     entity_type_folder = type_map.get(entity.type if entity else None, "entities")
     file_path = os.path.join(
@@ -60,11 +62,12 @@ def get_upload_entity(instance, filename):
 
 class Entity(models.Model):
     name=models.CharField(max_length=200, default="")
-    type = models.IntegerField(choices=[(1, 'Plant'), (2, 'Area'),(3, 'Equipment') ], default=1)
+    type = models.IntegerField(choices=[(1, 'Plant'), (2, 'Area'), (3, 'Equipment'), (4, 'Component'), (5, 'Subcomponent')], default=1)
+    tag = models.CharField(max_length=100, null=True, blank=True, unique=True)
     attachment = models.FileField(upload_to=get_upload_entity, null=True, blank=True)
     parent=models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name="children")
     created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    extra_info = models.JSONField(default=list, null=True, blank=True)
+    extra_info = models.JSONField(default=dict, null=True, blank=True)
     deleted= models.BooleanField(default=False)
     created_at= models.DateTimeField(auto_now_add=True, blank=True, null=True)
     deleted_at=models.DateTimeField(blank=True, null=True)

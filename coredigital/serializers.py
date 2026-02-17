@@ -52,6 +52,7 @@ class EntitySerializer(serializers.ModelSerializer):
             'id',
             'name',
             'type',
+            'tag',
             'attachment',
             'parent',
             'children',
@@ -64,8 +65,12 @@ class EntitySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['created_at', 'updated_at', 'deleted_at']
         extra_kwargs = {
-            'extra_info': {'required': False, 'allow_null': True},
+            'name': {'required': True},
+            'type': {'required': True},
+            'tag': {'required': True},
             'attachment': {'required': False, 'allow_null': True},
+            'parent': {'required': False, 'allow_null': True},
+            'extra_info': {'required': False, 'allow_null': True},
         }
 
 
@@ -83,6 +88,7 @@ class ReportSerializer(serializers.ModelSerializer):
             'name',
             'execution_date',
             'program',
+            'service_type',
             'task_type',
             'execution_status',
             'observations',
@@ -100,6 +106,8 @@ class ReportSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'attachment': {'required': False, 'allow_null': True},
             'name': {'required': False, 'allow_null': True, 'allow_blank': True},
+            'service_type': {'required': False, 'allow_null': True},
+            'task_type': {'required': False, 'allow_null': True},
             'observations': {'required': False, 'allow_null': True, 'allow_blank': True},
             'execution_date': {'required': False, 'allow_null': True},
             'diagnostic': {'required': False, 'allow_null': True},
