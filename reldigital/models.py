@@ -98,6 +98,7 @@ class Report(models.Model):
     diagnostic = models.TextField(null=True, blank=True)    
     recomendations = models.TextField(null=True, blank=True)
     created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
     deleted= models.BooleanField(default=False)
     created_at= models.DateTimeField(auto_now_add=True, blank=True, null=True)
     deleted_at=models.DateTimeField(blank=True, null=True)
@@ -105,9 +106,22 @@ class Report(models.Model):
     
     class Meta:
         db_table = f'{project_name}reports'
+        indexes = [
+            models.Index(fields=['entity', 'is_active']),
+        ]
         
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        # Al crear un nuevo reporte activo, desactivar todos los anteriores de la misma entidad
+        if self.is_active and self.entity:
+            Report.objects.filter(
+                entity=self.entity,
+                is_active=True,
+                deleted=False
+            ).exclude(id=self.id).update(is_active=False)
+        super().save(*args, **kwargs)
 
 class Notice(models.Model):
     report = models.ForeignKey(Report, null=True, blank=True, on_delete=models.CASCADE, related_name='notices')
