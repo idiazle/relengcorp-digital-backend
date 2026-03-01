@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'drf_spectacular',
     'reldigital'
 ]
 
@@ -121,12 +122,119 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# REST Framework Configuration
+# https://www.django-rest-framework.org/api-guide/settings/
+REST_FRAMEWORK = {
+    # Paginación por defecto
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    
+    # Filtros y búsqueda
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    
+    # Renderizado de respuestas
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    
+    # Parser de peticiones
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+    
+    # Autenticación (por ahora sin autenticación estricta)
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    
+    # Permisos (por ahora abierto, cambiar en producción)
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    
+    # Formato de fecha y hora
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+    'DATE_FORMAT': '%Y-%m-%d',
+    'TIME_FORMAT': '%H:%M:%S',
+    
+    # Manejo de excepciones
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    
+    # Límite de requests por página
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
+    
+    # Otras configuraciones útiles
+    'UNICODE_JSON': True,
+    'COMPACT_JSON': False,
+    'COERCE_DECIMAL_TO_STRING': False,
+    
+    # Documentación API con drf-spectacular
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+# Spectacular Settings (Documentación API)
+# https://drf-spectacular.readthedocs.io/en/latest/settings.html
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'RelengCorp Digital API',
+    'DESCRIPTION': 'API para gestión de mantenimiento predictivo y reportes de equipos industriales',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    
+    # Información de contacto
+    'CONTACT': {
+        'name': 'RelengCorp Digital',
+        'email': 'soporte@relengcorp.com',
+    },
+    
+    # Licencia
+    'LICENSE': {
+        'name': 'Propietario',
+    },
+    
+    # Términos de servicio
+    'TERMS_OF_SERVICE': None,
+    
+    # Configuración de la UI
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': True,
+        'filter': True,
+    },
+    
+    # Componentes de seguridad (para cuando se implemente auth)
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    
+    # Personalización
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
+    'SERVE_AUTHENTICATION': None,
+    
+    # Tags personalizados
+    'TAGS': [
+        {'name': 'Users', 'description': 'Gestión de usuarios del sistema'},
+        {'name': 'Entities', 'description': 'Gestión de entidades (plantas, áreas, rutas, equipos, items, componentes)'},
+        {'name': 'Reports', 'description': 'Gestión de reportes de mantenimiento'},
+        {'name': 'Notices', 'description': 'Gestión de avisos y órdenes de trabajo'},
+        {'name': 'Analytics', 'description': 'Endpoints de análisis y estadísticas'},
+    ],
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/El_Salvador'
 
 USE_I18N = True
 

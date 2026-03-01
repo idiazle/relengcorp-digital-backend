@@ -1,21 +1,22 @@
-"""
-⚠️ ARCHIVO OBSOLETO ⚠️
+from rest_framework import serializers
+from django.contrib.auth.models import Group
+from .models import User, Entity, Report, Notice, NoticeImage
 
-Este archivo ya no se usa.
-Los serializers se han movido a: reldigital/serializers.py
 
-Por favor, usa los serializers desde la aplicación reldigital.
-
-Puedes eliminar este archivo de forma segura o dejarlo aquí como referencia.
-
-Ver REFACTORING.md para más detalles.
-"""
-
-# Este archivo se mantiene por compatibilidad temporal
-# TODO: Eliminar este archivo después de verificar que todo funciona
+class GroupSerializer(serializers.ModelSerializer):
+    """Serializer para listar grupos disponibles"""
+    class Meta:
+        model = Group
+        fields = ['id', 'name']
 
 
 class UserSerializer(serializers.ModelSerializer):
+    groups = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Group.objects.all(),
+        required=False
+    )
+    
     class Meta:
         model = User
         fields = [
@@ -31,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password',
             'phone',
             'extra_emails',
+            'groups',  # Array de IDs de grupos
             'deleted',
             'created_at',
             'updated_at',
@@ -45,11 +47,38 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
+        groups = validated_data.pop('groups', [])
+        
         user = User(**validated_data)
         if password:
             user.set_password(password)
         user.save()
+        
+        # Asignar grupos usando los IDs
+        if groups:
+            user.groups.set(groups)
+        
         return user
+    
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        groups = validated_data.pop('groups', None)
+        
+        # Actualizar campos básicos
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        # Actualizar contraseña si se proporciona
+        if password:
+            instance.set_password(password)
+        
+        instance.save()
+        
+        # Actualizar grupos si se proporcionan (usando IDs)
+        if groups is not None:
+            instance.groups.set(groups)
+        
+        return instance
 
 
 class EntitySerializer(serializers.ModelSerializer):
@@ -137,11 +166,13 @@ class ReportSerializer(serializers.ModelSerializer):
             return obj.entity.get_hierarchy()
         return None
 
+
 class NoticeImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = NoticeImage
         fields = ['id', 'image']
-        
+
+
 class NoticeSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
     images = NoticeImageSerializer(many=True, write_only=True, required=False)

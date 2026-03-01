@@ -1,25 +1,73 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-from reldigital.models import User, Entity, Report, Notice
-from .serializers import UserSerializer, EntitySerializer, ReportSerializer, NoticeSerializer
-from django.db.models import OuterRef, Subquery
-from django.utils import timezone
-from datetime import timedelta
+"""
+⚠️ ARCHIVO OBSOLETO ⚠️
+
+Este archivo ya no se usa.
+Las vistas se han movido a: reldigital/views.py
+
+Por favor, usa las vistas desde la aplicación reldigital.
+
+Puedes eliminar este archivo de forma segura o dejarlo aquí como referencia.
+
+Ver REFACTORING.md para más detalles.
+"""
+
+# Este archivo se mantiene por compatibilidad temporal
+# TODO: Eliminar este archivo después de verificar que todo funciona
+
+
+# ======================
+#      PAGINATION
+# ======================
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 # ======================
 #        USER
 # ======================
 class UserAPIView(APIView):
+    pagination_class = StandardResultsSetPagination
+    
     def get(self, request, pk=None):
         if pk:
-            user = get_object_or_404(User, pk=pk, deleted=False)
+            # Obtener solo usuarios no eliminados
+            user = get_object_or_404(User.objects.filter(deleted=False), pk=pk)
             serializer = UserSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            # Listar solo usuarios no eliminados
             users = User.objects.filter(deleted=False)
+            
+            # Filtros opcionales
+            position = request.query_params.get('position', None)
+            if position:
+                users = users.filter(position__icontains=position)
+            
+            # Búsqueda por múltiples campos
+            search = request.query_params.get('search', None)
+            if search:
+                users = users.filter(
+                    Q(username__icontains=search) |
+                    Q(name__icontains=search) |
+                    Q(last_name__icontains=search) |
+                    Q(email__icontains=search) |
+                    Q(code__icontains=search) |
+                    Q(dui__icontains=search)
+                )
+            
+            # Ordenamiento (por defecto: más recientes primero)
+            ordering = request.query_params.get('ordering', '-created_at')
+            users = users.order_by(ordering)
+            
+            # Paginación
+            paginator = self.pagination_class()
+            page = paginator.paginate_queryset(users, request)
+            if page is not None:
+                serializer = UserSerializer(page, many=True)
+                return paginator.get_paginated_response(serializer.data)
+            
             serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -31,7 +79,8 @@ class UserAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk=None):
-        user = get_object_or_404(User, pk=pk, deleted=False)
+        # Solo actualizar usuarios no eliminados
+        user = get_object_or_404(User.objects.filter(deleted=False), pk=pk)
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -39,9 +88,10 @@ class UserAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        user = get_object_or_404(User, pk=pk, deleted=False)
+        # Eliminación lógica: solo marcar como eliminado
+        user = get_object_or_404(User.objects.filter(deleted=False), pk=pk)
         user.deleted = True
-        user.save()
+        user.save()  # La señal actualizará deleted_at automáticamente
         return Response({"message": "Usuario eliminado correctamente"}, status=status.HTTP_204_NO_CONTENT)
 
 
@@ -49,13 +99,49 @@ class UserAPIView(APIView):
 #       ENTITY
 # ======================
 class EntityAPIView(APIView):
+    pagination_class = StandardResultsSetPagination
+    
     def get(self, request, pk=None):
         if pk:
-            entity = get_object_or_404(Entity, pk=pk, deleted=False)
+            # Obtener solo entidades no eliminadas
+            entity = get_object_or_404(Entity.objects.filter(deleted=False), pk=pk)
             serializer = EntitySerializer(entity)
             return Response(serializer.data)
         else:
+            # Listar solo entidades no eliminadas
             entities = Entity.objects.filter(deleted=False)
+            
+            # Filtros opcionales
+            entity_type = request.query_params.get('type', None)
+            if entity_type:
+                entities = entities.filter(type=entity_type)
+            
+            parent_id = request.query_params.get('parent', None)
+            if parent_id:
+                if parent_id.lower() == 'null':
+                    entities = entities.filter(parent__isnull=True)
+                else:
+                    entities = entities.filter(parent_id=parent_id)
+            
+            # Búsqueda por nombre o tag
+            search = request.query_params.get('search', None)
+            if search:
+                entities = entities.filter(
+                    Q(name__icontains=search) |
+                    Q(tag__icontains=search)
+                )
+            
+            # Ordenamiento (por defecto: más recientes primero)
+            ordering = request.query_params.get('ordering', '-created_at')
+            entities = entities.order_by(ordering)
+            
+            # Paginación
+            paginator = self.pagination_class()
+            page = paginator.paginate_queryset(entities, request)
+            if page is not None:
+                serializer = EntitySerializer(page, many=True)
+                return paginator.get_paginated_response(serializer.data)
+            
             serializer = EntitySerializer(entities, many=True)
             return Response(serializer.data)
 
@@ -67,7 +153,8 @@ class EntityAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk=None):
-        entity = get_object_or_404(Entity, pk=pk, deleted=False)
+        # Solo actualizar entidades no eliminadas
+        entity = get_object_or_404(Entity.objects.filter(deleted=False), pk=pk)
         serializer = EntitySerializer(entity, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -75,9 +162,10 @@ class EntityAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        entity = get_object_or_404(Entity, pk=pk, deleted=False)
+        # Eliminación lógica: solo marcar como eliminado
+        entity = get_object_or_404(Entity.objects.filter(deleted=False), pk=pk)
         entity.deleted = True
-        entity.save()
+        entity.save()  # La señal actualizará deleted_at automáticamente
         return Response({"message": "Entidad eliminada correctamente"}, status=status.HTTP_204_NO_CONTENT)
 
 
@@ -85,19 +173,99 @@ class EntityAPIView(APIView):
 #        REPORT
 # ======================
 class NoticesByReportApiView(APIView):
+    """Obtener avisos de un reporte específico"""
+    pagination_class = StandardResultsSetPagination
+    
     def get(self, request, pk=None):
+        # Obtener solo avisos no eliminados del reporte
         notices = Notice.objects.filter(report=pk, deleted=False)
+        
+        # Filtros adicionales opcionales
+        status_filter = request.query_params.get('status', None)
+        if status_filter:
+            notices = notices.filter(status=status_filter)
+        
+        ot_status = request.query_params.get('ot_status', None)
+        if ot_status:
+            notices = notices.filter(ot_status=ot_status)
+        
+        # Ordenamiento (por defecto: más recientes primero)
+        ordering = request.query_params.get('ordering', '-created_at')
+        notices = notices.order_by(ordering)
+        
+        # Paginación
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(notices, request)
+        if page is not None:
+            notices_serialized = NoticeSerializer(page, many=True)
+            return paginator.get_paginated_response(notices_serialized.data)
+        
         notices_serialized = NoticeSerializer(notices, many=True)
         return Response(notices_serialized.data)
 
 class ReportAPIView(APIView):
+    pagination_class = StandardResultsSetPagination
+    
     def get(self, request, pk=None):
         if pk:
-            report = get_object_or_404(Report, pk=pk, deleted=False)
+            # Obtener solo reportes no eliminados
+            report = get_object_or_404(Report.objects.filter(deleted=False), pk=pk)
             serializer = ReportSerializer(report)
             return Response(serializer.data)
         else:
+            # Listar solo reportes no eliminados
             reports = Report.objects.filter(deleted=False)
+            
+            # Filtros opcionales
+            entity_id = request.query_params.get('entity', None)
+            if entity_id:
+                reports = reports.filter(entity_id=entity_id)
+            
+            work_type = request.query_params.get('work_type', None)
+            if work_type:
+                reports = reports.filter(work_type=work_type)
+            
+            service_type = request.query_params.get('service_type', None)
+            if service_type:
+                reports = reports.filter(service_type=service_type)
+            
+            condition = request.query_params.get('condition', None)
+            if condition:
+                reports = reports.filter(condition=condition)
+            
+            program = request.query_params.get('program', None)
+            if program:
+                reports = reports.filter(program=program)
+            
+            execution_status = request.query_params.get('execution_status', None)
+            if execution_status:
+                reports = reports.filter(execution_status=execution_status)
+            
+            is_active = request.query_params.get('is_active', None)
+            if is_active is not None:
+                reports = reports.filter(is_active=is_active.lower() in ['true', '1', 'yes'])
+            
+            # Búsqueda por múltiples campos
+            search = request.query_params.get('search', None)
+            if search:
+                reports = reports.filter(
+                    Q(name__icontains=search) |
+                    Q(observations__icontains=search) |
+                    Q(diagnostic__icontains=search) |
+                    Q(recomendations__icontains=search)
+                )
+            
+            # Ordenamiento (por defecto: más recientes primero)
+            ordering = request.query_params.get('ordering', '-created_at')
+            reports = reports.order_by(ordering)
+            
+            # Paginación
+            paginator = self.pagination_class()
+            page = paginator.paginate_queryset(reports, request)
+            if page is not None:
+                serializer = ReportSerializer(page, many=True)
+                return paginator.get_paginated_response(serializer.data)
+            
             serializer = ReportSerializer(reports, many=True)
             return Response(serializer.data)
 
@@ -109,7 +277,8 @@ class ReportAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk=None):
-        report = get_object_or_404(Report, pk=pk, deleted=False)
+        # Solo actualizar reportes no eliminados
+        report = get_object_or_404(Report.objects.filter(deleted=False), pk=pk)
         serializer = ReportSerializer(report, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -117,9 +286,10 @@ class ReportAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        report = get_object_or_404(Report, pk=pk, deleted=False)
+        # Eliminación lógica: solo marcar como eliminado
+        report = get_object_or_404(Report.objects.filter(deleted=False), pk=pk)
         report.deleted = True
-        report.save()
+        report.save()  # La señal actualizará deleted_at automáticamente
         return Response({"message": "Reporte eliminado correctamente"}, status=status.HTTP_204_NO_CONTENT)
 
 
@@ -127,13 +297,55 @@ class ReportAPIView(APIView):
 #        NOTICE
 # ======================
 class NoticeAPIView(APIView):
+    pagination_class = StandardResultsSetPagination
+    
     def get(self, request, pk=None):
         if pk:
-            notice = get_object_or_404(Notice, pk=pk, deleted=False)
+            # Obtener solo avisos no eliminados
+            notice = get_object_or_404(Notice.objects.filter(deleted=False), pk=pk)
             serializer = NoticeSerializer(notice)
             return Response(serializer.data)
         else:
+            # Listar solo avisos no eliminados
             notices = Notice.objects.filter(deleted=False)
+            
+            # Filtros opcionales
+            report_id = request.query_params.get('report', None)
+            if report_id:
+                notices = notices.filter(report_id=report_id)
+            
+            status_filter = request.query_params.get('status', None)
+            if status_filter:
+                notices = notices.filter(status=status_filter)
+            
+            ot_status = request.query_params.get('ot_status', None)
+            if ot_status:
+                notices = notices.filter(ot_status=ot_status)
+            
+            status_real = request.query_params.get('status_real', None)
+            if status_real:
+                notices = notices.filter(status_real=status_real)
+            
+            # Búsqueda por múltiples campos
+            search = request.query_params.get('search', None)
+            if search:
+                notices = notices.filter(
+                    Q(name__icontains=search) |
+                    Q(ot_number__icontains=search) |
+                    Q(comment__icontains=search)
+                )
+            
+            # Ordenamiento (por defecto: más recientes primero)
+            ordering = request.query_params.get('ordering', '-created_at')
+            notices = notices.order_by(ordering)
+            
+            # Paginación
+            paginator = self.pagination_class()
+            page = paginator.paginate_queryset(notices, request)
+            if page is not None:
+                serializer = NoticeSerializer(page, many=True)
+                return paginator.get_paginated_response(serializer.data)
+            
             serializer = NoticeSerializer(notices, many=True)
             return Response(serializer.data)
 
@@ -145,7 +357,8 @@ class NoticeAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk=None):
-        notice = get_object_or_404(Notice, pk=pk, deleted=False)
+        # Solo actualizar avisos no eliminados
+        notice = get_object_or_404(Notice.objects.filter(deleted=False), pk=pk)
         serializer = NoticeSerializer(notice, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -153,9 +366,10 @@ class NoticeAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        notice = get_object_or_404(Notice, pk=pk, deleted=False)
+        # Eliminación lógica: solo marcar como eliminado
+        notice = get_object_or_404(Notice.objects.filter(deleted=False), pk=pk)
         notice.deleted = True
-        notice.save()
+        notice.save()  # La señal actualizará deleted_at automáticamente
         return Response({"message": "Aviso eliminado correctamente"}, status=status.HTTP_204_NO_CONTENT)
 
 # ======================
@@ -173,7 +387,7 @@ class EquipmentConditionSummaryAPIView(APIView):
 
         equipos = (
             Entity.objects
-            .filter(type=3, deleted=False)
+            .filter(type=4, deleted=False)
             .annotate(
                 last_condition=Subquery(last_report.values("condition")[:1])
             )
@@ -220,7 +434,7 @@ class EquipmentConditionByMonthAPIView(APIView):
         }
 
         # Equipos
-        equipos = Entity.objects.filter(type=3, deleted=False)
+        equipos = Entity.objects.filter(type=4, deleted=False)
 
         for month in months:
             year, m = map(int, month.split("-"))

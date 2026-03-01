@@ -1,0 +1,2036 @@
+openapi: 3.0.3
+info:
+  title: RelengCorp Digital API
+  version: 1.0.0
+  description: API para gestión de mantenimiento predictivo y reportes de equipos
+    industriales
+  contact:
+    name: RelengCorp Digital
+    email: soporte@relengcorp.com
+  license:
+    name: Propietario
+paths:
+  /api/entities:
+    get:
+      operationId: list_entities
+      description: Obtiene la lista de entidades no eliminadas. Las entidades son
+        jerárquicas (plantas, áreas, rutas, equipos, items, componentes).
+      summary: Listar entidades
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: 'Campo para ordenar (ej: name, -created_at)'
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: parent
+        schema:
+          type: string
+        description: ID del padre o "null" para entidades raíz
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en name o tag
+      - in: query
+        name: type
+        schema:
+          type: integer
+        description: Tipo de entidad (1=Planta, 2=Área, 3=Ruta, 4=Equipo, 5=Item,
+          6=Componente)
+      tags:
+      - Entities
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEntityList'
+          description: ''
+    post:
+      operationId: create_entity
+      description: Crea una nueva entidad (planta, área, ruta, equipo, item o componente).
+        Puede ser jerárquica especificando un parent.
+      summary: Crear entidad
+      tags:
+      - Entities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_entity
+      description: Actualiza parcial o totalmente una entidad existente.
+      summary: Actualizar entidad
+      tags:
+      - Entities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_entity
+      description: Marca una entidad como eliminada sin eliminarla físicamente.
+      summary: Eliminar entidad (soft delete)
+      tags:
+      - Entities
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/entities/{id}:
+    get:
+      operationId: list_entities_2
+      description: Obtiene la lista de entidades no eliminadas. Las entidades son
+        jerárquicas (plantas, áreas, rutas, equipos, items, componentes).
+      summary: Listar entidades
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: 'Campo para ordenar (ej: name, -created_at)'
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: parent
+        schema:
+          type: string
+        description: ID del padre o "null" para entidades raíz
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en name o tag
+      - in: query
+        name: type
+        schema:
+          type: integer
+        description: Tipo de entidad (1=Planta, 2=Área, 3=Ruta, 4=Equipo, 5=Item,
+          6=Componente)
+      tags:
+      - Entities
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEntityList'
+          description: ''
+    post:
+      operationId: create_entity_2
+      description: Crea una nueva entidad (planta, área, ruta, equipo, item o componente).
+        Puede ser jerárquica especificando un parent.
+      summary: Crear entidad
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Entities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_entity_2
+      description: Actualiza parcial o totalmente una entidad existente.
+      summary: Actualizar entidad
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Entities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EntityRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_entity_2
+      description: Marca una entidad como eliminada sin eliminarla físicamente.
+      summary: Eliminar entidad (soft delete)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Entities
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/equipments/conditions-by-month:
+    get:
+      operationId: equipment_condition_by_month
+      description: Obtiene el conteo de equipos por condición (C1-C4) para cada uno
+        de los últimos 7 meses.
+      summary: Condiciones de equipos por mes
+      tags:
+      - Analytics
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Mapa de meses con conteo de condiciones
+                additionalProperties:
+                  type: object
+                  properties:
+                    c1:
+                      type: integer
+                    c2:
+                      type: integer
+                    c3:
+                      type: integer
+                    c4:
+                      type: integer
+          description: ''
+  /api/groups:
+    get:
+      operationId: list_groups
+      description: Obtiene la lista de grupos (roles) disponibles para asignar a usuarios.
+      summary: Listar grupos disponibles
+      tags:
+      - Users
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+          description: ''
+  /api/notices:
+    get:
+      operationId: list_notices
+      description: Obtiene la lista de avisos y órdenes de trabajo no eliminados.
+      summary: Listar avisos
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: Campo para ordenar
+      - in: query
+        name: ot_status
+        schema:
+          type: string
+        description: Estado de la orden de trabajo
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: report
+        schema:
+          type: integer
+        description: ID del reporte
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en name, ot_number, comment
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Estado del aviso
+      - in: query
+        name: status_real
+        schema:
+          type: string
+        description: Estado real
+      tags:
+      - Notices
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNoticeList'
+          description: ''
+    post:
+      operationId: create_notice
+      description: Crea un nuevo aviso u orden de trabajo con soporte para múltiples
+        imágenes.
+      summary: Crear aviso
+      tags:
+      - Notices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notice'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_notice
+      description: Actualiza parcial o totalmente un aviso u orden de trabajo existente.
+      summary: Actualizar aviso
+      tags:
+      - Notices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notice'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_notice
+      description: Marca un aviso como eliminado sin eliminarlo físicamente.
+      summary: Eliminar aviso (soft delete)
+      tags:
+      - Notices
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/notices-by-report/{id}:
+    get:
+      operationId: list_notices_by_report
+      description: Obtiene todos los avisos asociados a un reporte específico.
+      summary: Listar avisos de un reporte
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: Campo para ordenar
+      - in: query
+        name: ot_status
+        schema:
+          type: string
+        description: Filtrar por estado de OT
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: path
+        name: pk
+        schema:
+          type: integer
+        description: ID del reporte
+        required: true
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filtrar por estado
+      tags:
+      - Notices
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNoticeList'
+          description: ''
+  /api/notices/{id}:
+    get:
+      operationId: list_notices_2
+      description: Obtiene la lista de avisos y órdenes de trabajo no eliminados.
+      summary: Listar avisos
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: Campo para ordenar
+      - in: query
+        name: ot_status
+        schema:
+          type: string
+        description: Estado de la orden de trabajo
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: report
+        schema:
+          type: integer
+        description: ID del reporte
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en name, ot_number, comment
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Estado del aviso
+      - in: query
+        name: status_real
+        schema:
+          type: string
+        description: Estado real
+      tags:
+      - Notices
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNoticeList'
+          description: ''
+    post:
+      operationId: create_notice_2
+      description: Crea un nuevo aviso u orden de trabajo con soporte para múltiples
+        imágenes.
+      summary: Crear aviso
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Notices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notice'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_notice_2
+      description: Actualiza parcial o totalmente un aviso u orden de trabajo existente.
+      summary: Actualizar aviso
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Notices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NoticeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notice'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_notice_2
+      description: Marca un aviso como eliminado sin eliminarlo físicamente.
+      summary: Eliminar aviso (soft delete)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Notices
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/reports:
+    get:
+      operationId: list_reports
+      description: Obtiene la lista de reportes de mantenimiento no eliminados con
+        múltiples filtros disponibles.
+      summary: Listar reportes
+      parameters:
+      - in: query
+        name: condition
+        schema:
+          type: string
+        description: Condición del equipo
+      - in: query
+        name: entity
+        schema:
+          type: integer
+        description: ID de la entidad (equipo)
+      - in: query
+        name: execution_status
+        schema:
+          type: string
+        description: Estado de ejecución
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+        description: Si es el reporte activo del equipo
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: 'Campo para ordenar (ej: -execution_date)'
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: program
+        schema:
+          type: string
+        description: Programa de mantenimiento
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en name, observations, diagnostic, recomendations
+      - in: query
+        name: service_type
+        schema:
+          type: string
+        description: Tipo de servicio
+      - in: query
+        name: work_type
+        schema:
+          type: string
+        description: Tipo de trabajo
+      tags:
+      - Reports
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReportList'
+          description: ''
+    post:
+      operationId: create_report
+      description: Crea un nuevo reporte de mantenimiento. Si is_active=true, desactiva
+        otros reportes del mismo equipo automáticamente.
+      summary: Crear reporte
+      tags:
+      - Reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_report
+      description: Actualiza parcial o totalmente un reporte de mantenimiento existente.
+      summary: Actualizar reporte
+      tags:
+      - Reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_report
+      description: Marca un reporte como eliminado sin eliminarlo físicamente. No
+        elimina el archivo adjunto.
+      summary: Eliminar reporte (soft delete)
+      tags:
+      - Reports
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/reports/{id}:
+    get:
+      operationId: list_reports_2
+      description: Obtiene la lista de reportes de mantenimiento no eliminados con
+        múltiples filtros disponibles.
+      summary: Listar reportes
+      parameters:
+      - in: query
+        name: condition
+        schema:
+          type: string
+        description: Condición del equipo
+      - in: query
+        name: entity
+        schema:
+          type: integer
+        description: ID de la entidad (equipo)
+      - in: query
+        name: execution_status
+        schema:
+          type: string
+        description: Estado de ejecución
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+        description: Si es el reporte activo del equipo
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: 'Campo para ordenar (ej: -execution_date)'
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: program
+        schema:
+          type: string
+        description: Programa de mantenimiento
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en name, observations, diagnostic, recomendations
+      - in: query
+        name: service_type
+        schema:
+          type: string
+        description: Tipo de servicio
+      - in: query
+        name: work_type
+        schema:
+          type: string
+        description: Tipo de trabajo
+      tags:
+      - Reports
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReportList'
+          description: ''
+    post:
+      operationId: create_report_2
+      description: Crea un nuevo reporte de mantenimiento. Si is_active=true, desactiva
+        otros reportes del mismo equipo automáticamente.
+      summary: Crear reporte
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_report_2
+      description: Actualiza parcial o totalmente un reporte de mantenimiento existente.
+      summary: Actualizar reporte
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_report_2
+      description: Marca un reporte como eliminado sin eliminarlo físicamente. No
+        elimina el archivo adjunto.
+      summary: Eliminar reporte (soft delete)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Reports
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/summary-conditions:
+    get:
+      operationId: equipment_condition_summary
+      description: Obtiene un resumen del conteo de equipos según su última condición
+        reportada (C1, C2, C3, C4).
+      summary: Resumen de condiciones de equipos
+      tags:
+      - Analytics
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  c1:
+                    type: integer
+                    description: Cantidad de equipos en condición 1
+                  c2:
+                    type: integer
+                    description: Cantidad de equipos en condición 2
+                  c3:
+                    type: integer
+                    description: Cantidad de equipos en condición 3
+                  c4:
+                    type: integer
+                    description: Cantidad de equipos en condición 4
+          description: ''
+  /api/users:
+    get:
+      operationId: list_users
+      description: Obtiene la lista de usuarios no eliminados con soporte para paginación,
+        búsqueda, filtros y ordenamiento.
+      summary: Listar usuarios
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: 'Campo para ordenar (ej: username, -created_at)'
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: position
+        schema:
+          type: string
+        description: Filtrar por posición
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en username, name, last_name, email, code, dui
+      tags:
+      - Users
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: create_user
+      description: Crea un nuevo usuario en el sistema. La contraseña se hashea automáticamente.
+      summary: Crear usuario
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_user
+      description: Actualiza parcial o totalmente un usuario existente.
+      summary: Actualizar usuario
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_user
+      description: Marca un usuario como eliminado sin eliminarlo físicamente. Solo
+        establece deleted=true y deleted_at.
+      summary: Eliminar usuario (soft delete)
+      tags:
+      - Users
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+  /api/users/{id}:
+    get:
+      operationId: list_users_2
+      description: Obtiene la lista de usuarios no eliminados con soporte para paginación,
+        búsqueda, filtros y ordenamiento.
+      summary: Listar usuarios
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          default: -created_at
+        description: 'Campo para ordenar (ej: username, -created_at)'
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Número de página
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 'Elementos por página (max: 100)'
+      - in: query
+        name: position
+        schema:
+          type: string
+        description: Filtrar por posición
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Buscar en username, name, last_name, email, code, dui
+      tags:
+      - Users
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: create_user_2
+      description: Crea un nuevo usuario en el sistema. La contraseña se hashea automáticamente.
+      summary: Crear usuario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+    put:
+      operationId: update_user_2
+      description: Actualiza parcial o totalmente un usuario existente.
+      summary: Actualizar usuario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+        '404':
+          description: No response body
+    delete:
+      operationId: delete_user_2
+      description: Marca un usuario como eliminado sin eliminarlo físicamente. Solo
+        establece deleted=true y deleted_at.
+      summary: Eliminar usuario (soft delete)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          description: No response body
+components:
+  schemas:
+    ConditionEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      type: integer
+      description: |-
+        * `1` - Normal
+        * `2` - Tolerable
+        * `3` - Precaución
+        * `4` - Crítico
+    Entity:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        tag:
+          type: string
+          nullable: true
+          maxLength: 100
+        attachment:
+          type: string
+          format: uri
+          nullable: true
+        parent:
+          type: integer
+          nullable: true
+        children:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        extra_info:
+          nullable: true
+        deleted:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        deleted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - children
+      - created_at
+      - created_by
+      - deleted_at
+      - id
+      - name
+      - tag
+      - type
+      - updated_at
+    EntityRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        tag:
+          type: string
+          nullable: true
+          maxLength: 100
+        attachment:
+          type: string
+          format: binary
+          nullable: true
+        parent:
+          type: integer
+          nullable: true
+        extra_info:
+          nullable: true
+        deleted:
+          type: boolean
+      required:
+      - name
+      - tag
+      - type
+    ExecutionStatusEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - Ejecutado
+        * `2` - No ejecutado
+    Group:
+      type: object
+      description: Serializer para listar grupos disponibles
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre
+          maxLength: 150
+      required:
+      - id
+      - name
+    Notice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 250
+        date:
+          type: string
+          format: date
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        ot_status:
+          allOf:
+          - $ref: '#/components/schemas/OtStatusEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        ot_number:
+          type: string
+          nullable: true
+          maxLength: 250
+        ot_date:
+          type: string
+          format: date
+          nullable: true
+        status_real:
+          allOf:
+          - $ref: '#/components/schemas/StatusRealEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        comment:
+          type: string
+          nullable: true
+        report:
+          type: integer
+          nullable: true
+      required:
+      - created_by
+      - date
+      - id
+      - name
+    NoticeImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          format: uri
+      required:
+      - id
+      - image
+    NoticeImageRequest:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+      required:
+      - image
+    NoticeRequest:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoticeImageRequest'
+          writeOnly: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 250
+        date:
+          type: string
+          format: date
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        ot_status:
+          allOf:
+          - $ref: '#/components/schemas/OtStatusEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        ot_number:
+          type: string
+          nullable: true
+          maxLength: 250
+        ot_date:
+          type: string
+          format: date
+          nullable: true
+        status_real:
+          allOf:
+          - $ref: '#/components/schemas/StatusRealEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        comment:
+          type: string
+          nullable: true
+        report:
+          type: integer
+          nullable: true
+      required:
+      - date
+      - name
+    NullEnum:
+      enum:
+      - null
+    OtStatusEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - Abierto
+        * `2` - Cerrado
+    PaginatedEntityList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entity'
+    PaginatedNoticeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notice'
+    PaginatedReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Report'
+    PaginatedUserList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    ProgramEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - Programado
+        * `2` - No programado
+    Report:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        entity:
+          type: integer
+          nullable: true
+        entity_detail:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 250
+        execution_date:
+          type: string
+          format: date-time
+          nullable: true
+        program:
+          allOf:
+          - $ref: '#/components/schemas/ProgramEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        service_type:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/ServiceTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        work_type:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/WorkTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        execution_status:
+          allOf:
+          - $ref: '#/components/schemas/ExecutionStatusEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        observations:
+          type: string
+          nullable: true
+        condition:
+          allOf:
+          - $ref: '#/components/schemas/ConditionEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        attachment:
+          type: string
+          format: uri
+          nullable: true
+        diagnostic:
+          type: string
+          nullable: true
+        recomendations:
+          type: string
+          nullable: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        is_active:
+          type: boolean
+          default: true
+        deleted:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        deleted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - deleted_at
+      - entity_detail
+      - id
+      - updated_at
+    ReportRequest:
+      type: object
+      properties:
+        entity:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 250
+        execution_date:
+          type: string
+          format: date-time
+          nullable: true
+        program:
+          allOf:
+          - $ref: '#/components/schemas/ProgramEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        service_type:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/ServiceTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        work_type:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/WorkTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        execution_status:
+          allOf:
+          - $ref: '#/components/schemas/ExecutionStatusEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        observations:
+          type: string
+          nullable: true
+        condition:
+          allOf:
+          - $ref: '#/components/schemas/ConditionEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        attachment:
+          type: string
+          format: binary
+          nullable: true
+        diagnostic:
+          type: string
+          nullable: true
+        recomendations:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          default: true
+        deleted:
+          type: boolean
+    ServiceTypeEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      type: integer
+      description: |-
+        * `1` - Vibraciones y temperatura
+        * `2` - Alineamiento de ejes
+        * `3` - Termografía infrarroja
+        * `4` - Ultrasonido convencional
+        * `5` - Tintes Penetrantes
+        * `6` - Ultrasonido avanzado
+        * `7` - Metrología
+        * `8` - Inspección visual
+        * `9` - Otros
+    StatusEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - Abierto
+        * `2` - Cerrado
+    StatusRealEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - Atendido
+        * `2` - No antendido
+    TypeEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      type: integer
+      description: |-
+        * `1` - Plant
+        * `2` - Area
+        * `3` - Route
+        * `4` - Equipment
+        * `5` - Item
+        * `6` - Component
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 12
+        name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 150
+        username:
+          type: string
+          maxLength: 150
+        dui:
+          type: string
+          maxLength: 20
+        short_name:
+          type: string
+          maxLength: 50
+        position:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 150
+        phone:
+          type: string
+          nullable: true
+          maxLength: 150
+        extra_emails:
+          type: string
+          nullable: true
+          maxLength: 200
+        groups:
+          type: array
+          items:
+            type: integer
+        deleted:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - code
+      - created_at
+      - deleted_at
+      - dui
+      - email
+      - id
+      - last_name
+      - name
+      - position
+      - short_name
+      - updated_at
+      - username
+    UserRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 12
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        username:
+          type: string
+          minLength: 1
+          maxLength: 150
+        dui:
+          type: string
+          minLength: 1
+          maxLength: 20
+        short_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        position:
+          type: string
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        phone:
+          type: string
+          nullable: true
+          maxLength: 150
+        extra_emails:
+          type: string
+          nullable: true
+          maxLength: 200
+        groups:
+          type: array
+          items:
+            type: integer
+        deleted:
+          type: boolean
+      required:
+      - code
+      - dui
+      - email
+      - last_name
+      - name
+      - password
+      - position
+      - short_name
+      - username
+    WorkTypeEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - PDM
+        * `2` - NDT
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+tags:
+- name: Users
+  description: Gestión de usuarios del sistema
+- name: Entities
+  description: Gestión de entidades (plantas, áreas, rutas, equipos, items, componentes)
+- name: Reports
+  description: Gestión de reportes de mantenimiento
+- name: Notices
+  description: Gestión de avisos y órdenes de trabajo
+- name: Analytics
+  description: Endpoints de análisis y estadísticas

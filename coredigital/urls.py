@@ -17,32 +17,22 @@ Including another URLconf
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path
-from .views import UserAPIView, EntityAPIView, ReportAPIView, NoticeAPIView, NoticesByReportApiView, EquipmentConditionSummaryAPIView,EquipmentConditionByMonthAPIView
+from django.urls import path, include
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
-    path('api/admin', admin.site.urls),
-        # USER
-    path('api/users', UserAPIView.as_view()),
-    path('api/users/<int:pk>', UserAPIView.as_view()),
-
-    # ENTITY
-    path('api/entities', EntityAPIView.as_view()),
-    path('api/entities/<int:pk>', EntityAPIView.as_view()),
-
-    # REPORT
-    path('api/reports', ReportAPIView.as_view()),
-    path('api/reports/<int:pk>', ReportAPIView.as_view()),
-
-    # NOTICE
-    path('api/notices', NoticeAPIView.as_view()),
-    path('api/notices/<int:pk>', NoticeAPIView.as_view()),
+    # Django Admin
+    path('api/admin/', admin.site.urls),
     
-    #OTHERS
-    path('api/notices-by-report/<int:pk>', NoticesByReportApiView.as_view()),
-    path('api/summary-conditions', EquipmentConditionSummaryAPIView.as_view()),
-    path('api/equipments/conditions-by-month',EquipmentConditionByMonthAPIView.as_view()),
+    # API Documentation (Swagger/OpenAPI)
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     
+    # App URLs
+    path('api/', include('reldigital.urls')),
 ]
+
+# Servir archivos media en desarrollo
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
