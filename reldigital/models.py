@@ -90,8 +90,11 @@ class Entity(models.Model):
     
     def get_hierarchy(self):
         """
-        Retorna la jerarquía completa desde la entidad actual hasta la raíz (planta)
-        Retorna un diccionario con la estructura jerárquica completa
+        Retorna la jerarquía completa desde la entidad actual hasta la raíz
+        Retorna un diccionario con:
+        - 'current': información de la entidad actual
+        - 'parents': lista ordenada de padres (del más cercano al más lejano/raíz)
+        - 'hierarchy_path': string legible de la jerarquía completa (de raíz a actual)
         """
         hierarchy = {
             'current': {
@@ -100,26 +103,32 @@ class Entity(models.Model):
                 'type': self.type,
                 'type_name': self.get_type_display(),
                 'tag': self.tag
-            }
+            },
+            'parents': []
         }
         
-        # Recorrer hacia arriba para obtener padres
+        # Recorrer hacia arriba para obtener todos los padres
         current = self.parent
         level = 0
+        max_levels = 10  # Protección contra loops infinitos
         
-        while current and level < 5:  # Máximo 5 niveles para evitar loops infinitos
+        while current and level < max_levels:
             level += 1
-            type_key = current.get_type_display().lower()
-            
-            hierarchy[type_key] = {
+            parent_info = {
                 'id': current.id,
                 'name': current.name,
                 'type': current.type,
                 'type_name': current.get_type_display(),
-                'tag': current.tag
+                'tag': current.tag,
+                'level': level
             }
-            
+            hierarchy['parents'].append(parent_info)
             current = current.parent
+        
+        # Generar string legible de la jerarquía completa (de raíz a hoja)
+        hierarchy_parts = [p['name'] for p in reversed(hierarchy['parents'])]
+        hierarchy_parts.append(self.name)
+        hierarchy['hierarchy_path'] = ' > '.join(hierarchy_parts)
         
         return hierarchy
 

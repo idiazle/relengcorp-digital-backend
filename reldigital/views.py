@@ -175,7 +175,7 @@ class EntityAPIView(APIView):
             OpenApiParameter(name='type', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY, description='Tipo de entidad (1=Planta, 2=Área, 3=Ruta, 4=Equipo, 5=Item, 6=Componente)'),
             OpenApiParameter(name='parent', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='ID del padre o "null" para entidades raíz'),
             OpenApiParameter(name='search', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Buscar en name o tag'),
-            OpenApiParameter(name='ordering', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Campo para ordenar (ej: name, -created_at)', default='-created_at'),
+            OpenApiParameter(name='ordering', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Campo para ordenar (ej: name, -created_at)', default='-type, name'),
         ],
         responses={200: EntitySerializer(many=True)},
     )
@@ -216,9 +216,12 @@ class EntityAPIView(APIView):
                     Q(tag__icontains=search)
                 )
             
-            # Ordenamiento (por defecto: más recientes primero)
-            ordering = request.query_params.get('ordering', '-created_at')
-            entities = entities.order_by(ordering)
+            # Ordenamiento (por defecto: tipo descendente, luego por nombre)
+            ordering = request.query_params.get('ordering', None)
+            if ordering:
+                entities = entities.order_by(ordering)
+            else:
+                entities = entities.order_by('-type', 'name')
             
             # Paginación
             paginator = self.pagination_class()
@@ -275,6 +278,118 @@ class EntityAPIView(APIView):
         entity.deleted = True
         entity.save()  # La señal actualizará deleted_at automáticamente
         return Response({"message": "Entidad eliminada correctamente"}, status=status.HTTP_204_NO_CONTENT)
+
+
+# ======================
+#    AREAS & EQUIPMENTS
+# ======================
+class AreasAPIView(APIView):
+    """Vista específica para listar solo áreas (type=2)"""
+    pagination_class = StandardResultsSetPagination
+    
+    @extend_schema(
+        tags=['Entities'],
+        operation_id='list_areas',
+        summary='Listar áreas',
+        description='Obtiene la lista de áreas (type=2) no eliminadas.',
+        parameters=[
+            OpenApiParameter(name='page', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY, description='Número de página'),
+            OpenApiParameter(name='page_size', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY, description='Elementos por página (max: 100)'),
+            OpenApiParameter(name='parent', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='ID del padre (planta) o "null"'),
+            OpenApiParameter(name='search', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Buscar en name o tag'),
+            OpenApiParameter(name='ordering', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Campo para ordenar', default='name'),
+        ],
+        responses={200: EntitySerializer(many=True)},
+    )
+    def get(self, request):
+        # Listar solo áreas no eliminadas
+        areas = Entity.objects.filter(deleted=False, type=2)
+        
+        # Filtros opcionales
+        parent_id = request.query_params.get('parent', None)
+        if parent_id:
+            if parent_id.lower() == 'null':
+                areas = areas.filter(parent__isnull=True)
+            else:
+                areas = areas.filter(parent_id=parent_id)
+        
+        # Búsqueda por nombre o tag
+        search = request.query_params.get('search', None)
+        if search:
+            areas = areas.filter(
+                Q(name__icontains=search) |
+                Q(tag__icontains=search)
+            )
+        
+        # Ordenamiento (por defecto: por nombre)
+        ordering = request.query_params.get('ordering', 'name')
+        areas = areas.order_by(ordering)
+        
+        # Paginación
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(areas, request)
+        if page is not None:
+            serializer = EntitySerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        
+        serializer = EntitySerializer(areas, many=True)
+        return Response(serializer.data)
+
+
+class EquipmentsAPIView(APIView):
+    """Vista específica para listar solo equipos (type=4)"""
+    pagination_class = StandardResultsSetPagination
+    
+    @extend_schema(
+        tags=['Entities'],
+        operation_id='list_equipments',
+        summary='Listar equipos',
+        description='Obtiene la lista de equipos (type=4) no eliminados.',
+        parameters=[
+            OpenApiParameter(name='page', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY, description='Número de página'),
+            OpenApiParameter(name='page_size', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY, description='Elementos por página (max: 100)'),
+            OpenApiParameter(name='parent', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='ID del padre (ruta) o "null"'),
+            OpenApiParameter(name='search', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Buscar en name o tag'),
+            OpenApiParameter(name='ordering', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, description='Campo para ordenar (ej: name, -created_at)', default='parent_id, name'),
+        ],
+        responses={200: EntitySerializer(many=True)},
+    )
+    def get(self, request):
+        # Listar solo equipos no eliminados (con optimización para traer el parent)
+        equipments = Entity.objects.filter(deleted=False, type=4).select_related('parent')
+        
+        # Filtros opcionales
+        parent_id = request.query_params.get('parent', None)
+        if parent_id:
+            if parent_id.lower() == 'null':
+                equipments = equipments.filter(parent__isnull=True)
+            else:
+                equipments = equipments.filter(parent_id=parent_id)
+        
+        # Búsqueda por nombre o tag
+        search = request.query_params.get('search', None)
+        if search:
+            equipments = equipments.filter(
+                Q(name__icontains=search) |
+                Q(tag__icontains=search)
+            )
+        
+        # Ordenamiento (por defecto: por id de ruta descendente, luego por nombre de equipo)
+        ordering = request.query_params.get('ordering', None)
+        if ordering:
+            equipments = equipments.order_by(ordering)
+        else:
+            equipments = equipments.order_by('parent_id', 'name')
+        
+        # Paginación
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(equipments, request)
+        if page is not None:
+            serializer = EntitySerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        
+        serializer = EntitySerializer(equipments, many=True)
+        return Response(serializer.data)
 
 
 # ======================

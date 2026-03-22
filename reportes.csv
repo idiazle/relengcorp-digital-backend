@@ -1,0 +1,167 @@
+﻿ITEM;PLANTA;RUTA;TAG;EQUIPO;COMPONENTE;CONDICION;MODO FALLA 01;MODO FALLA 02;DIAGNOSTICO;AVISO / OT;TIPO DE AVISO;FECHA;STATUS;DIAS;DESCRIPCION SAP
+1;PTAE;RUTA 1;120-SS-01A;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"Se observa armonicos de la frecuencia de liena
+(Baja cantidad de agua de proceso evita el encendido de equipos)";;;;;;
+2;PTAE;RUTA 1;120-SS-01A;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Se observa ruido a alta frecuecnia en aceleracion;;;;;;
+3;PTAE;RUTA 1;120-SS-01B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Soltura mecanica rotativa;"Se observa armonicos a frecuencia de linea .
+Se observa aromicos a la velocidad de giro.";;;;;;
+4;PTAE;RUTA 1;120-SS-01B;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Flexibilidad estructural;Cavitacion;Se observa ruido a alta frecuencia en aceleracion;;;;;;
+5;PTAE;RUTA 1;120-SS-03;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Desarrollo falla rodamiento;Fuga de corriente;Se observa armonicos incipientes de la frecuencia de linea.;;;;;;
+6;PTAE;RUTA 1;120-SS-03;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Se observa ruido a alta frecuecnia en aceleracion;;;;;;
+7;PTAE;RUTA 1;120-SS-04;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Desarrollo falla rodamiento;Fuga de corriente;Presenta BPFO incicial punto 1H Y 2H;;;;;;
+8;PTAE;RUTA 1;120-SS-04;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Se observa ruido a alta frecuencia en aceleracion;;;;;;
+9;PTAE;RUTA 2;100-PMP-BP-01;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;Operador indica insuficiencia de agua blending de mina, no es posible prender el equipo;;;;;;
+10;PTAE;RUTA 2;100-PMP-BP-01;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste de Impulsor;;Operador indica insuficiencia de agua blending de mina, no es posible prender el equipo;;;;;;
+11;PTAE;RUTA 2;100-PMP-BP-02;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Desarrollo falla rodamiento;Operador indica insuficiencia de agua blending de mina, no es posible prender el equipo;;;;;;
+12;PTAE;RUTA 2;100-PMP-BP-02;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste de Impulsor;;Operador indica insuficiencia de agua blending de mina, no es posible prender el equipo;;;;;;
+13;PTAE;RUTA 2;100-PMP-BP-03;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;Operador indica insuficiencia de agua blending de mina, no es posible prender el equipo;;;;;;
+14;PTAE;RUTA 2;100-PMP-BP-03;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste de Impulsor;;Operador indica insuficiencia de agua blending de mina, no es posible prender el equipo;;;;;;
+15;PTAE;RUTA 2;110-PMP-LF-001;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;;;;;;;
+16;PTAE;RUTA 2;110-PMP-LF-001;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;;;;;;;
+17;PTAE;RUTA 2;110-PMP-LF-002;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;;;;;;;
+18;PTAE;RUTA 2;110-PMP-LF-002;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desarrollo falla rodamiento;;;;;;;;
+19;PTAE;RUTA 3;100-PMP-F-001;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;;Se observa frecuencia de linea.;;;;;;
+20;PTAE;RUTA 3;100-PMP-F-001;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Cavitacion;;Se aprecia ruido a alta frecuencia.;;;;;;
+21;PTAE;RUTA 3;100-PMP-F-002;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;;;;;;;;;
+22;PTAE;RUTA 3;100-PMP-F-002;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Desgaste de Impulsor;Cavitacion;"Ruido a alta frecuencia
+Frecuencia de alabes 6X ";100979614 / OT 11362887;MECANICO;5/05/25;CERRADO;306;CAMBIO DE RODAMIENTOS DEL MOTOR E INSPECCION REALIZADA EN DICIEMBRE
+23;PTAE;RUTA 3;100-PMP-F-003;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;Fuga de corriente;Se obesrva multiples armonicos a 2FL.;;;;;;
+24;PTAE;RUTA 3;100-PMP-F-003;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;;;Se observa ruido espectral;;;;;;
+25;PTAE;RUTA 3;100-PMP-F-004;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;Fuga de corriente;Se observa frecuencia de linea con armonicos.;;;;;;
+26;PTAE;RUTA 3;100-PMP-F-004;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Cavitacion;Desgaste de Impulsor;Ruido a alta frecuencia;;;;;;
+27;PTAE;RUTA 3;160-BB-101;BOMBA HORIZONTAL;MOTOR;NORMAL;;;Baja cantidad e agua de proceso evita el encendido de equipos;;;;;;
+28;PTAE;RUTA 3;160-BB-101;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Soltura mecanica rotativa;;Baja cantidad e agua de proceso evita el encendido de equipos;;;;;;
+29;PTAE;RUTA 3;160-BB-102;BOMBA HORIZONTAL;MOTOR;NORMAL;;;;;;;;;
+30;PTAE;RUTA 3;160-BB-102;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Soltura mecanica rotativa;;;;;;;;
+31;PTAE;RUTA 4;120-PMP-OI-001A;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Deficiencia de lubricacion;"• Se observa frecuencia de linea y armonicos  de baja amplitud.
+• Aumento de ruido  espectral en aceleracion y envolvente.";;;;;;
+32;PTAE;RUTA 4;120-PMP-OI-001A;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Deficiencia de lubricacion;;"• Aumento de ruido  espectral en aceleracion y envolvente.
+• Ausencia de aceite de reserva en caja de rodamiento por fuga irregular.";;;;;;
+33;PTAE;RUTA 4;120-PMP-OI-001A;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Flexibilidad estructural;Desgaste anillos deslizamiento;• Aumento de virbacion en descarga de bomba.;;;;;;
+34;PTAE;RUTA 4;120-PMP-OI-001B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;• Se observa frecuencia de linea y armonicos  de baja amplitud.;;;;;;
+35;PTAE;RUTA 4;120-PMP-OI-001B;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;;;• Aumento de ruido  espectral en aceleracion y envolvente.;;;;;;
+36;PTAE;RUTA 4;120-PMP-OI-001B;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+37;PTAE;RUTA 4;120-PMP-OI-002A;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"• Se observa frecuencia de linea y armonicos  de baja amplitud.
+• Aumento de ruido  espectral en aceleracion y envolvente.";;;;;;
+38;PTAE;RUTA 4;120-PMP-OI-002A;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Deficiencia de lubricacion;;Corregir la lubricacion automatica de la caja de rodamientos, se agrego aceite de forma manual.;;;;;;
+39;PTAE;RUTA 4;120-PMP-OI-002A;BOMBA HORIZONTAL;BOMBA;NORMAL;;;Limpieza Quimica;;;;;;
+40;PTAE;RUTA 4;120-PMP-OI-002B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"• Se observa frecuencia de linea y armonicos  de baja amplitud.
+• Aumento de ruido  espectral en aceleracion y envolvente.";;;;;;
+41;PTAE;RUTA 4;120-PMP-OI-002B;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;NORMAL;;;Limpieza Quimica;;;;;;
+42;PTAE;RUTA 4;120-PMP-OI-002B;BOMBA HORIZONTAL;BOMBA;NORMAL;;;Limpieza Quimica;;;;;;
+43;PTAE;RUTA 4;120-PMP-OI-003 A;BOMBA HORIZONTAL;MOTOR;NORMAL;Soltura mecanica rotativa;Calidad de energia;Se desmonta motor para cambio de rodamientos y pruebas electricas.;101083594 / OT 11540366;ELECTRICO;19/10/25;CERRADO;139;CAMBIO DE MOTOR REALIZADO 16/01/26 
+44;PTAE;RUTA 4;120-PMP-OI-003 A;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;NORMAL;;;Equipo sin motor;;;;;;
+45;PTAE;RUTA 4;120-PMP-OI-003 A;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste anillos deslizamiento;;Equipo sin motor;;;;;;
+46;PTAE;RUTA 4;120-PMP-OI-003 B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;Equipo trabaja en conjunto a bomba 120-PMPM-OI-003-A;;;;;;
+47;PTAE;RUTA 4;120-PMP-OI-003 B;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Incremento inicial de vibración global;;Equipo trabaja en conjunto a bomba 120-PMPM-OI-003-A;;;;;;
+48;PTAE;RUTA 4;120-PMP-OI-003 B;BOMBA HORIZONTAL;BOMBA;TOLERABLE;;;Equipo trabaja en conjunto a bomba 120-PMPM-OI-003-A;;;;;;
+49;PTAE;RUTA 4;120-PMP-OI-004A;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;• Frecuencia a 6X predominante.;;;;;;
+50;PTAE;RUTA 4;120-PMP-OI-004A;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Desarrollo falla rodamiento;Deficiencia de lubricacion;• Aumento de ruido espectral.;;;;;;
+51;PTAE;RUTA 4;120-PMP-OI-004A;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste anillos deslizamiento;;• Aumento de vibracion en descarga de bomba.;;;;;;
+52;PTAE;RUTA 4;120-PMP-OI-004B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"• Frecuencia a 6X predominante.
+• Frecuencia e linea presencia de armonicos de baja amplitud.";;;;;;
+53;PTAE;RUTA 4;120-PMP-OI-004B;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Desarrollo falla rodamiento;;• Aumento de ruido espectral  en aceleracion .;;;;;;
+54;PTAE;RUTA 4;120-PMP-OI-004B;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Flexibilidad estructural;;• Aumento de vibracion en descarga de bomba.;;;;;;
+55;PTAE;RUTA 4;120-PMP-OI-005 A;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Desarrollo falla rodamiento;"• Frecuencia a 6X predominante.
+• Frecuencia e linea presencia de armonicos de baja amplitud.";;;;;;
+56;PTAE;RUTA 4;120-PMP-OI-005 A;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Deficiencia de lubricacion;Desarrollo falla rodamiento;• Aumento de ruido espectral  en envolvente .;;;;;;
+57;PTAE;RUTA 4;120-PMP-OI-005 A;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+58;PTAE;RUTA 4;120-PMP-OI-005 B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"• Frecuencia a 6X predominante.
+• Frecuencia e linea presencia de armonicos de baja amplitud.";;;;;;
+59;PTAE;RUTA 4;120-PMP-OI-005 B;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;NORMAL;;;;;;;;;
+60;PTAE;RUTA 4;120-PMP-OI-005 B;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+61;PTAE;RUTA 4;120-PMP-OI-006 A;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"• Frecuencia a 6X predominante.
+• Frecuencia e linea presencia de armonicos de baja amplitud.";;;;;;
+62;PTAE;RUTA 4;120-PMP-OI-006 A;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;TOLERABLE;Flexibilidad estructural;Desarrollo falla rodamiento;• Aumento de amplitud de frecuencia fundamental y 2X;;;;;;
+63;PTAE;RUTA 4;120-PMP-OI-006 A;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste anillos deslizamiento;;• Aumento de vibracion en descarga de bomba.;;;;;;
+64;PTAE;RUTA 4;120-PMP-OI-006 B;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"• Frecuencia a 6X predominante.
+• Frecuencia e linea presencia de armonicos de baja amplitud.";;;;;;
+65;PTAE;RUTA 4;120-PMP-OI-006 B;BOMBA HORIZONTAL;CAJA DE RODAMIENTOS;NORMAL;;;;;;;;;
+66;PTAE;RUTA 4;120-PMP-OI-006 B;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste anillos deslizamiento;;• Aumento de virbacion en descarga de bomba.;;;;;;
+67;PTAE;RUTA 5;110-CMP-003;COMPRESOR DE PISTONES;MOTOR;NO MONITOREADO;;;;;;;;;
+68;PTAE;RUTA 5;110-CMP-003;COMPRESOR DE PISTONES;COMPRESOR;NO MONITOREADO;;;;;;;;;
+69;PTAE;RUTA 5;110-CMP-001;COMPRESOR DE TORNILLOS;MOTOR;NO MONITOREADO;;;Baja cantidad de agua de proceso evita el encendido de equipos. Se realiza trabajos en tuberia de ingreso de agua. Operador indica no destapar por incremento de temperatura.;;;;;;
+70;PTAE;RUTA 5;110-CMP-001;COMPRESOR DE TORNILLOS;COMPRESOR;NO MONITOREADO;;;Baja cantidad de agua de proceso evita el encendido de equipos. Se realiza trabajos en tuberia de ingreso de agua. Operador indica no destapar por incremento de temperatura.;;;;;;
+71;PTAE;RUTA 5;120-PMP-CIP-001;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Flexibilidad estructural;;Baja cantidad de agua de proceso evita el encendido de equipos. Se realiza trabajos en tuberia de ingreso de agua.;;;;;;
+72;PTAE;RUTA 5;110-BLW-001;SOPLADOR;MOTOR;NO MONITOREADO;Fuga de corriente;;;;;;;;
+73;PTAE;RUTA 5;110-BLW-001;SOPLADOR;SOPLADOR;NO MONITOREADO;;;;;;;;;
+74;PTAE;RUTA 5;110-BLW-002;SOPLADOR;MOTOR;NO MONITOREADO;Fuga de corriente;;;;;;;;
+75;PTAE;RUTA 5;110-BLW-002;SOPLADOR;SOPLADOR;NO MONITOREADO;Desarrollo falla rodamiento;;;;;;;;
+76;PTAE;RUTA 6;100-PMP-005;BOMBA HORIZONTAL;MOTOR;PRECAUCION ;Ventilador fisurado;;Ventilador presenta fisuras, y acumulacion de polvo.;101128032;MECANICO;22/01/26;ABIERTO;44;"CAMBIO DE VENTILADOR
+SIN PROGRAMACION"
+77;PTAE;RUTA 6;100-PMP-005;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;;;;;;;
+78;PTAE;RUTA 6;100-PMP-006;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Frecuencia de linea .;;;;;;
+79;PTAE;RUTA 6;100-PMP-006;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Aumento de ruido a alta frecuencia.;;;;;;
+80;PTAE;RUTA 6;100-PMP-007;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;"Frecuencia de falla incipiente BPFI
+Frecuencia de linea con leves armonicos.";;;;;;
+81;PTAE;RUTA 6;100-PMP-007;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+82;PTAE;RUTA 6;100-PMP-008;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;Frecuencia de linea con armonicos.;;;;;;
+83;PTAE;RUTA 6;100-PMP-008;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+84;PTAE;RUTA 6;100-PMP-009;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Frecuencia de linea con armonicos.;;;;;;
+85;PTAE;RUTA 6;100-PMP-009;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;Desarrollo falla rodamiento;Preenta BPFI punto 4 ;;;;;;
+86;PTAE;RUTA 7;170-PMP-001;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Frecuencia de línea con múltiples armónicos.;;;;;;
+87;PTAE;RUTA 7;170-PMP-001;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Se observa ruido espectral a alta frecuencia.;;;;;;
+88;PTAE;RUTA 7;170-PMP-002;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;Se observa armónicos a la velocidad de giro;;;;;;
+89;PTAE;RUTA 7;170-PMP-002;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;Desarrollo falla rodamiento;Frecuencia de línea con múltiples armónicos.;;;;;;
+90;PTAE;RUTA 7;170-PMP-003;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Se observa ruido espectral a alta frecuencia.;;;;;;
+91;PTAE;RUTA 7;170-PMP-003;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Presenta cavitacion, se eleva la vibracion global por periodos;;;;;;
+92;PTAE;RUTA 7;100-PMP-R-001;BOMBA HORIZONTAL;MOTOR;NORMAL;;;Equipo funciona de acuerdo a condicion;;;;;;
+93;PTAE;RUTA 7;100-PMP-R-001;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Equipo funciona de acuerdo a condicion;;;;;;
+94;PTAE;RUTA 7;100-PMP-R-002;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;;;Equipo inoperativo.;;;;;;
+95;PTAE;RUTA 7;100-PMP-R-002;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;;;Equipo inoperativo.;;;;;;
+96;PTAE;RUTA 7;0800-PP-101;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Desenergizado;;Equipo inoperativo en espera de puesta en marcha, queda pendiente conexión eléctrica del motor.;;;;;;PENDIENTE ENERGIZAR EQUIPO Y PRUEBA EN VACIO
+97;PTAE;RUTA 7;0800-PP-101;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Desenergizado;;Ya se rigidizó la base, equipo equipo se encuentra alineado.;;;;;;
+98;PTAE;RUTA 7;0800-PP-102;BOMBA HORIZONTAL;MOTOR;PRECAUCION ;Soltura estructural;;Se encontró vibracion alta a 3125 RPM( 16 mm/s y 19 mm/s) FLEXIBLIDAD RESONANCIA POR FLEXIBILIDAD ESTRUCTURALCorregir la debilidad estructural. Realizar pruebas de funcionamiento para hallar rango de frecuenia adecuado de para operar la bomba.;101083196 / OT 11539558;INGENIERIA;18/10/25;EN TRATAMIENTO;140;"CORREGIR DEBILIDAD ESTRUCTURAL
+ PROGRAMADO 18/01/2026 (NO SE CORRRIGE Y SE CIERRA AVISO)"
+99;PTAE;RUTA 7;0800-PP-102;BOMBA HORIZONTAL;BOMBA;NORMAL;Cavitacion;;Ya se rigidizó la base, equipo equipo se encuentra alineado.;;;;;;
+100;PTAE;RUTA 8;110-PMP-FL-001;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;Fuga de corriente;• Frecuencia de linea con armonicos.;;;;;;
+101;PTAE;RUTA 8;110-PMP-FL-001;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Cavitacion;;• Ruido a alta frecuencia, piso elevado envolvente.;;;;;;
+102;PTAE;RUTA 8;110-PMP-FL-002;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;Fuga de corriente;• Frecuencia de linea con armonicos.;;;;;;
+103;PTAE;RUTA 8;110-PMP-FL-002;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Cavitacion;;• Ruido a alta frecuencia, piso elevado envolvente.;;;;;;
+104;PTAE;RUTA 8;110-PMP-BW-001;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;• Frecuencia de linea con armonicos.;;;;;;
+105;PTAE;RUTA 8;110-PMP-BW-001;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;• Ruido a alta frecuencia, piso elevado envolvente.;;;;;;
+106;PTAE;RUTA 8;110-PMP-BW-002;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;;• Valvula check cerrada (Valvula no abre), para encender equipo;;;;;;
+107;PTAE;RUTA 8;110-PMP-BW-002;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Cavitacion;Desarrollo falla rodamiento;Presenta BPFI inicial ;;;;;;
+108;PTAE;RUTA 8;110-PMP-BW-003;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;• Frecuencia de linea con armonicos.;;;;;;
+109;PTAE;RUTA 8;110-PMP-BW-003;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;• Ruido a alta frecuencia, piso elevado envolvente.;;;;;;
+110;PTAE;RUTA 9;110-PMP-001;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Desarrollo falla rodamiento;Calidad de energia;"Frecuencia de linea con armonicos.
+Presenta BPFI inicial ";;;;;;
+111;PTAE;RUTA 9;110-PMP-001;BOMBA HORIZONTAL;BOMBA;NORMAL;;;Se realizó el cambio de rodamineto de botella de bomba el dia 16.06.25 por falla en bomba (rotura de sello mecanico)  .;;;;;;
+112;PTAE;RUTA 9;110-PMP-002;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Frecuencia de Linea ;;;;;;
+113;PTAE;RUTA 9;110-PMP-002;BOMBA HORIZONTAL;BOMBA;PRECAUCION ;Desarrollo falla rodamiento;Cavitacion;Presenta BPFI ;100997844 / OT 11412650;MECANICO;31/05/25;CERRADO;280;CAMBIO DE RODAMIENTOS PROGRAMADO PARA 05/01/26, (NO SE CORRRIGE Y SE CIERRA AVISO)
+114;PTAE;RUTA 9;110-PMP-003;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Se realizó la instalación de ;;;;;;
+115;PTAE;RUTA 9;110-PMP-003;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;Desarrollo falla rodamiento;Ruido a alta frecuencia;;;;;;
+116;PTAE;RUTA 9;110-PMP-004;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Frecuencia de Linea ;;;;;;
+117;PTAE;RUTA 9;110-PMP-004;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Ruido a alta frecuencia;;;;;;
+118;PTAE;RUTA 9;110-PMP-005;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;Fuga de corriente;Frecuencia de Linea ;;;;;;
+119;PTAE;RUTA 9;110-PMP-005;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;Ruido a alta frecuencia;;;;;;
+120;PTAE;RUTA 10;120-PMP-CIP-002;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;;;;;;;;
+121;PTAE;RUTA 10;120-PMP-CIP-002;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Desarrollo falla rodamiento;;;;;;;;
+122;PTAE;RUTA 10;120-PMP-CIP-003;BOMBA HORIZONTAL;MOTOR;NORMAL;Calidad de energia;;;;;;;;
+123;PTAE;RUTA 10;120-PMP-CIP-003;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desarrollo falla rodamiento;;;;;;;;
+124;PTAE;RUTA 10;100-CP-002;COMPRESOR ATLAS COPCO GA;MOTOR;NO MONITOREADO;;;Equipo retirato del area de trabajo;;;;;;
+125;PTAE;RUTA 10;100-CP-002;COMPRESOR ATLAS COPCO GA;COMPRESOR;NO MONITOREADO;;;Equipo retirato del area de trabajo;;;;;;
+126;PTAE;RUTA 10;COMPRESOR ATLAS COPCO AIRPOWER;0320-CPC-1001-1;MOTOR;NO MONITOREADO;;;;;;;;;
+127;PTAE;RUTA 10;COMPRESOR ATLAS COPCO AIRPOWER;0320-CPC-1001-1;COMPRESOR;NO MONITOREADO;;;;;;;;;
+128;PTAE;RUTA 10;100-CP-003;COMPRESOR SCHULZ SRP 3050;MOTOR;TOLERABLE;;;;;;;;;
+129;PTAE;RUTA 10;100-CP-003;COMPRESOR SCHULZ SRP 3050;COMPRESOR;TOLERABLE;Deficiencia de lubricacion;;;;;;;;
+130;PTAE;RUTA 11;120-PMP-OI-007;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Fuga de corriente;;;;;;;;
+131;PTAE;RUTA 11;120-PMP-OI-007;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste anillos deslizamiento;;;;;;;;
+132;PTAE;RUTA 11;120-PMP-OI-007;BOMBA HORIZONTAL;TURBO COMPRESOR;NORMAL;;;;;;;;;
+133;PTAE;RUTA 11;120-PMP-OI-008;BOMBA HORIZONTAL;MOTOR;NO MONITOREADO;Calidad de energia;;;;;;;;
+134;PTAE;RUTA 11;120-PMP-OI-008;BOMBA HORIZONTAL;BOMBA;NO MONITOREADO;Desgaste anillos deslizamiento;;;;;;;;
+135;PTAE;RUTA 11;120-PMP-OI-008;BOMBA HORIZONTAL;TURBO COMPRESOR;NO MONITOREADO;;;;;;;;;
+136;PTAE;RUTA 11;120-PMP-OI-009;BOMBA HORIZONTAL;MOTOR;NORMAL;;;;;;;;;
+137;PTAE;RUTA 11;120-PMP-OI-009;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+138;PTAE;RUTA 11;120-PMP-OI-009;BOMBA HORIZONTAL;TURBO COMPRESOR;NORMAL;;;;;;;;;
+139;PTAE;RUTA 11;120-PMP-OI-010;BOMBA HORIZONTAL;MOTOR;NORMAL;;;;;;;;;
+140;PTAE;RUTA 11;120-PMP-OI-010;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Desgaste anillos deslizamiento;;;;;;;;
+141;PTAE;RUTA 11;120-PMP-OI-010;BOMBA HORIZONTAL;TURBO COMPRESOR;NORMAL;;;;;;;;;
+142;PTAE;RUTA 11;120-PMP-OI-011;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;;;;;;;
+143;PTAE;RUTA 11;120-PMP-OI-011;BOMBA HORIZONTAL;BOMBA;TOLERABLE;Cavitacion;;;;;;;;
+144;PTAE;RUTA 11;120-PMP-OI-011;BOMBA HORIZONTAL;TURBO COMPRESOR;NORMAL;;;;;;;;;
+145;PTAE;RUTA 11;120-PMP-OI-012;BOMBA HORIZONTAL;MOTOR;PRECAUCION ;Desarrollo falla rodamiento;Calidad de energia;Espectro muestra frecuencia de falla en la pista interna (BPFI).;101105376 / OT 11576953;ELECTRICO;2/12/25;EN TRATAMIENTO;95;CAMBIO DE RODAMIENTOS PROGRAMADO 10/04/2026
+146;PTAE;RUTA 11;120-PMP-OI-012;BOMBA HORIZONTAL;BOMBA;NORMAL;Cavitacion;;;;;;;;
+147;PTAE;RUTA 11;120-PMP-OI-012;BOMBA HORIZONTAL;TURBO COMPRESOR;NORMAL;;;;;;;;;
+148;PTAE;RUTA 11;120-PMP-OI-013;BOMBA HORIZONTAL;MOTOR;TOLERABLE;Calidad de energia;;;;;;;;
+149;PTAE;RUTA 11;120-PMP-OI-013;BOMBA HORIZONTAL;BOMBA;NORMAL;;;;;;;;;
+150;PTAE;RUTA 11;120-PMP-OI-013;BOMBA HORIZONTAL;TURBO COMPRESOR;NORMAL;Cavitacion;;;;;;;;

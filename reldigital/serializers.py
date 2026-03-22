@@ -81,12 +81,32 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+
+class EntityParentSerializer(serializers.ModelSerializer):
+    """Serializer simplificado para mostrar información del parent"""
+    class Meta:
+        model = Entity
+        fields = ['id', 'name', 'tag']
+
+
+class EntityChildrenSerializer(serializers.ModelSerializer):
+    """Serializer simplificado para mostrar información de los children"""
+    class Meta:
+        model = Entity
+        fields = ['id', 'name']
+
+
 class EntitySerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
-    parent = serializers.PrimaryKeyRelatedField(
-        queryset=Entity.objects.all(), allow_null=True, required=False
+    parent = EntityParentSerializer(read_only=True)
+    parent_id = serializers.PrimaryKeyRelatedField(
+        queryset=Entity.objects.all(), 
+        allow_null=True, 
+        required=False,
+        source='parent',
+        write_only=True
     )
-    children = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    children = EntityChildrenSerializer(many=True, read_only=True)
 
     class Meta:
         model = Entity
@@ -97,6 +117,7 @@ class EntitySerializer(serializers.ModelSerializer):
             'tag',
             'attachment',
             'parent',
+            'parent_id',
             'children',
             'created_by',
             'extra_info',
@@ -110,8 +131,7 @@ class EntitySerializer(serializers.ModelSerializer):
             'name': {'required': True},
             'type': {'required': True},
             'tag': {'required': True},
-            'attachment': {'required': False, 'allow_null': True},
-            'parent': {'required': False, 'allow_null': True},
+            'attachment': {'required': False, 'allow_null': True, 'use_url': True},
             'extra_info': {'required': False, 'allow_null': True},
         }
 
@@ -121,14 +141,14 @@ class ReportSerializer(serializers.ModelSerializer):
     entity = serializers.PrimaryKeyRelatedField(
         queryset=Entity.objects.all(), allow_null=True, required=False
     )
-    entity_detail = serializers.SerializerMethodField()
+    parents = serializers.SerializerMethodField()
 
     class Meta:
         model = Report
         fields = [
             'id',
             'entity',
-            'entity_detail',
+            'parents',
             'name',
             'execution_date',
             'program',
@@ -147,9 +167,9 @@ class ReportSerializer(serializers.ModelSerializer):
             'deleted_at',
             'updated_at',
         ]
-        read_only_fields = ['created_at', 'updated_at', 'deleted_at', 'entity_detail']
+        read_only_fields = ['created_at', 'updated_at', 'deleted_at', 'parents']
         extra_kwargs = {
-            'attachment': {'required': False, 'allow_null': True},
+            'attachment': {'required': False, 'allow_null': True, 'use_url': True},
             'name': {'required': False, 'allow_null': True, 'allow_blank': True},
             'service_type': {'required': False, 'allow_null': True},
             'work_type': {'required': False, 'allow_null': True},
@@ -160,17 +180,21 @@ class ReportSerializer(serializers.ModelSerializer):
             'is_active': {'required': False, 'default': True},
         }
     
-    def get_entity_detail(self, obj):
-        """Obtiene la entidad con su jerarquía completa"""
+    def get_parents(self, obj):
+        """Obtiene la lista de padres de la entidad asociada al reporte"""
         if obj.entity:
-            return obj.entity.get_hierarchy()
-        return None
+            hierarchy = obj.entity.get_hierarchy()
+            return hierarchy.get('parents', [])
+        return []
 
 
 class NoticeImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = NoticeImage
         fields = ['id', 'image']
+        extra_kwargs = {
+            'image': {'use_url': True},
+        }
 
 
 class NoticeSerializer(serializers.ModelSerializer):
