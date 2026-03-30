@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,8 +149,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ],
     
-    # Autenticación (por ahora sin autenticación estricta)
+    # Autenticación
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     
@@ -213,6 +215,7 @@ SPECTACULAR_SETTINGS = {
     # Componentes de seguridad (para cuando se implemente auth)
     'COMPONENT_SPLIT_REQUEST': True,
     'SCHEMA_PATH_PREFIX': '/api/',
+    'SCHEMA_PATH_PREFIX_TRIM': True,
     
     # Personalización
     'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
@@ -220,6 +223,7 @@ SPECTACULAR_SETTINGS = {
     
     # Tags personalizados
     'TAGS': [
+        {'name': 'Auth', 'description': 'Autenticación y sesión de usuario'},
         {'name': 'Users', 'description': 'Gestión de usuarios del sistema'},
         {'name': 'Entities', 'description': 'Gestión de entidades (plantas, áreas, rutas, equipos, items, componentes)'},
         {'name': 'Reports', 'description': 'Gestión de reportes de mantenimiento'},
@@ -228,13 +232,22 @@ SPECTACULAR_SETTINGS = {
     ],
 }
 
+# JWT Configuration
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': True,
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'America/El_Salvador'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 

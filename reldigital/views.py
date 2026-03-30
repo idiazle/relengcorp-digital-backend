@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import get_object_or_404
 from django.db.models import OuterRef, Subquery, Q
 from django.utils import timezone
@@ -11,7 +13,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 from drf_spectacular.types import OpenApiTypes
 
 from .models import User, Entity, Report, Notice
-from .serializers import UserSerializer, EntitySerializer, ReportSerializer, NoticeSerializer, GroupSerializer
+from .serializers import UserSerializer, EntitySerializer, ReportSerializer, NoticeSerializer, GroupSerializer, LoginSerializer
 
 
 # ======================
@@ -21,6 +23,29 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 100
+
+
+# ======================
+#        AUTH
+# ======================
+class LoginAPIView(TokenObtainPairView):
+    """Endpoint de login personalizado que retorna tokens con info del usuario"""
+    serializer_class = LoginSerializer
+
+
+class CurrentUserAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=['Auth'],
+        operation_id='get_current_user',
+        summary='Usuario autenticado',
+        description='Devuelve la información del usuario autenticado a partir del token enviado en Authorization: Bearer <token>.',
+        responses={200: UserSerializer, 401: None},
+    )
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # ======================

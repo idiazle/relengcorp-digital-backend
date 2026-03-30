@@ -1,6 +1,58 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Group
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, Entity, Report, Notice, NoticeImage
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    """Serializador personalizado para login con información del usuario en el token"""
+    
+    @classmethod
+    def get_token(cls, user):
+        """Sobrescribir para agregar claims customizados al token"""
+        token = super().get_token(user)
+        
+        # Agregar información del usuario al token
+        token['id'] = user.id
+        token['username'] = user.username
+        token['email'] = user.email
+        token['name'] = user.name
+        token['last_name'] = user.last_name
+        token['code'] = user.code
+        token['position'] = user.position
+        token['short_name'] = user.short_name
+        token['phone'] = user.phone or ""
+        token['groups'] = list(user.groups.values_list('id', flat=True))
+        token['is_staff'] = user.is_staff
+        token['is_superuser'] = user.is_superuser
+        token['is_active'] = user.is_active
+        
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+
+        data['code'] = 200
+        data['user'] = {
+            'id': user.id,
+            'code': user.code,
+            'name': user.name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'dui': user.dui,
+            'short_name': user.short_name,
+            'position': user.position,
+            'email': user.email,
+            'phone': user.phone,
+            'extra_emails': user.extra_emails,
+            'groups': list(user.groups.values_list('id', flat=True)),
+            'deleted': user.deleted,
+            'is_active': user.is_active,
+            'is_staff': user.is_staff,
+            'is_superuser': user.is_superuser,
+        }
+        return data
 
 
 class GroupSerializer(serializers.ModelSerializer):
