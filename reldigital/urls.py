@@ -9,6 +9,7 @@ from .views import (
     UserAPIView,
     GroupAPIView,
     EntityAPIView,
+    EntityTreeAPIView,
     AreasAPIView,
     EquipmentsAPIView,
     ReportAPIView,
@@ -36,6 +37,7 @@ urlpatterns = [
     # ENTITY
     path('entities', EntityAPIView.as_view(), name='entity-list'),
     path('entities/<int:pk>', EntityAPIView.as_view(), name='entity-detail'),
+    path('entities/tree', EntityTreeAPIView.as_view(), name='entity-tree'),
     path('areas', AreasAPIView.as_view(), name='areas-list'),
     path('equipments', EquipmentsAPIView.as_view(), name='equipments-list'),
 

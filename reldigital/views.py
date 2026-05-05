@@ -218,8 +218,8 @@ class EntityAPIView(APIView):
             serializer = EntitySerializer(entity)
             return Response(serializer.data)
         else:
-            # Listar solo entidades no eliminadas
-            entities = Entity.objects.filter(deleted=False)
+            # Listar solo entidades no eliminadas de tipo Planta (1) o Área (2)
+            entities = Entity.objects.filter(deleted=False, type__in=[1, 2, 3])
             
             # Filtros opcionales
             entity_type = request.query_params.get('type', None)
@@ -303,6 +303,57 @@ class EntityAPIView(APIView):
         entity.deleted = True
         entity.save()  # La señal actualizará deleted_at automáticamente
         return Response({"message": "Entidad eliminada correctamente"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class EntityTreeAPIView(APIView):
+    @extend_schema(
+        tags=['Entities'],
+        operation_id='list_entities_tree',
+        summary='Arbol de entidades',
+        description='Devuelve las entidades no eliminadas como un arbol jerarquico con children anidados.',
+        responses={200: EntitySerializer(many=True)},
+    )
+    def get(self, request):
+        type_labels = dict(Entity.TYPE_CHOICES)
+        entities = list(
+            Entity.objects.filter(deleted=False)
+            .order_by('parent_id', 'name', 'id')
+            .values('id', 'name', 'type', 'tag', 'parent_id')
+        )
+
+        nodes = {
+            entity['id']: {
+                'id': entity['id'],
+                'name': entity['name'],
+                'type': entity['type'],
+                'type_name': type_labels.get(entity['type'], 'Unknown'),
+                'tag': entity['tag'],
+                'parent_id': entity['parent_id'],
+                'children': [],
+            }
+            for entity in entities
+        }
+
+        roots = []
+        for entity in entities:
+            node = nodes[entity['id']]
+            parent_id = entity['parent_id']
+
+            if parent_id and parent_id != entity['id'] and parent_id in nodes:
+                nodes[parent_id]['children'].append(node)
+            else:
+                roots.append(node)
+
+        def sort_children(node):
+            node['children'].sort(key=lambda child: (child['name'], child['id']))
+            for child in node['children']:
+                sort_children(child)
+
+        roots.sort(key=lambda node: (node['name'], node['id']))
+        for root in roots:
+            sort_children(root)
+
+        return Response(roots, status=status.HTTP_200_OK)
 
 
 # ======================

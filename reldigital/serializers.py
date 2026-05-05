@@ -187,6 +187,25 @@ class EntitySerializer(serializers.ModelSerializer):
             'extra_info': {'required': False, 'allow_null': True},
         }
 
+    def to_internal_value(self, data):
+        """
+        Acepta `parent` (id u objeto con id) además de `parent_id` para mantener compatibilidad.
+        """
+        mutable_data = data.copy()
+
+        if 'parent' in mutable_data and 'parent_id' not in mutable_data:
+            parent_value = mutable_data.get('parent')
+
+            if isinstance(parent_value, dict):
+                parent_value = parent_value.get('id', None)
+
+            if parent_value in ('', 'null', 'None'):
+                parent_value = None
+
+            mutable_data['parent_id'] = parent_value
+
+        return super().to_internal_value(mutable_data)
+
 
 class ReportSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
