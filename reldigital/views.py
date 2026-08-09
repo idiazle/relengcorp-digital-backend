@@ -633,3 +633,144 @@ class EquipmentConditionByMonthAPIView(APIView):
                     result[month][f"c{e.last_condition}"] += 1
 
         return Response(result, status=status.HTTP_200_OK)
+
+class DashboardStatsAPIView(APIView):
+    """
+    Endpoint para obtener datos del dashboard filtrando por work_type (1=PDM, 2=NDT) y area (Entity ID).
+    Retorna la estructura json agrupada por fechas y semanas.
+    """
+    
+    def get(self, request):
+        work_type = request.query_params.get('work_type', None)
+        area_id = request.query_params.get('area', None)
+
+        reports_qs = Report.objects.filter(deleted=False)
+        notices_qs = Notice.objects.filter(deleted=False)
+
+        if work_type:
+            reports_qs = reports_qs.filter(work_type=work_type)
+
+        if area_id:
+            routes = Entity.objects.filter(parent_id=area_id, type=3)
+            equipments = Entity.objects.filter(parent__in=routes, type=4)
+            reports_qs = reports_qs.filter(entity__in=equipments)
+            notices_qs = notices_qs.filter(report__entity__in=equipments)
+
+        today = timezone.now().date()
+        
+        # Generar últimos 7 días
+        last_7_days = [(today - timedelta(days=i)) for i in range(6, -1, -1)]
+        # Generar últimas 7 semanas (inicio de semana)
+        last_7_weeks = [(today - timedelta(days=today.weekday()) - timedelta(weeks=i)) for i in range(6, -1, -1)]
+
+        meses_es = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+
+        def format_date(d):
+            return f"{d.day}-{meses_es[d.month - 1]}"
+
+        # 1. equipPie (Condition breakdown total)
+        equip_pie = [
+            {"name": "normal", "value": reports_qs.filter(condition=1).count(), "fill": "#4CAF50"},
+            {"name": "tolerable", "value": reports_qs.filter(condition=2).count(), "fill": "#FFC107"},
+            {"name": "precaucion", "value": reports_qs.filter(condition=3).count(), "fill": "#FF9800"},
+            {"name": "critico", "value": reports_qs.filter(condition=4).count(), "fill": "#F44336"}
+        ]
+
+        # Estructuras para datos diarios
+        cond_comp_percentage = []
+        cumplimiento = []
+        eq_monitoreo = []
+        avisos_ot = []
+
+        # Obtener total de equipos para calcular no monitoreados
+        if area_id:
+            total_eq = Entity.objects.filter(parent__in=Entity.objects.filter(parent_id=area_id, type=3), type=4).count()
+        else:
+            total_eq = Entity.objects.filter(type=4, deleted=False).count()
+
+        for d in last_7_days:
+            start_dt = timezone.datetime.combine(d, timezone.datetime.min.time(), tzinfo=timezone.get_current_timezone())
+            end_dt = start_dt + timedelta(days=1)
+
+            day_reports = reports_qs.filter(created_at__gte=start_dt, created_at__lt=end_dt)
+            day_notices = notices_qs.filter(created_at__gte=start_dt, created_at__lt=end_dt)
+
+            name_str = format_date(d)
+
+            # condCompPercentage
+            total_cond = day_reports.count()
+            if total_cond > 0:
+                cond_comp_percentage.append({
+                    "name": name_str,
+                    "normal": round(day_reports.filter(condition=1).count() / total_cond, 2),
+                    "tolerable": round(day_reports.filter(condition=2).count() / total_cond, 2),
+                    "precaucion": round(day_reports.filter(condition=3).count() / total_cond, 2),
+                    "critico": round(day_reports.filter(condition=4).count() / total_cond, 2),
+                })
+            else:
+                cond_comp_percentage.append({
+                    "name": name_str,
+                    "normal": 0, "tolerable": 0, "precaucion": 0, "critico": 0
+                })
+
+            # cumplimiento
+            total_prog = day_reports.filter(program=1).count()
+            exec_prog = day_reports.filter(program=1, execution_status=1).count()
+            cumplimiento.append({
+                "name": name_str,
+                "value": round(exec_prog / total_prog, 2) if total_prog > 0 else 0
+            })
+
+            # eqMonitoreo
+            mon = day_reports.filter(execution_status=1).values('entity').distinct().count()
+            eq_monitoreo.append({
+                "name": name_str,
+                "mon": mon,
+                "no_mon": total_eq - mon
+            })
+
+            # avisosOt
+            avisos_ot.append({
+                "name": name_str,
+                "avisos": day_notices.filter(ot_number__isnull=True).count(),
+                "ot": day_notices.filter(ot_number__isnull=False).count()
+            })
+
+        # 4. noProgramWorks (por semana)
+        no_program_works = []
+        for i, w_start in enumerate(last_7_weeks):
+            w_start_dt = timezone.datetime.combine(w_start, timezone.datetime.min.time(), tzinfo=timezone.get_current_timezone())
+            w_end_dt = w_start_dt + timedelta(days=7)
+            
+            w_reports = reports_qs.filter(created_at__gte=w_start_dt, created_at__lt=w_end_dt)
+            no_program_works.append({
+                "name": f"Sem. {i+1}",
+                "value": w_reports.filter(program=2).count()
+            })
+
+        # 6. avisosOtCerrAb (Total acumulado, como en el JSON)
+        ots_abiertos = notices_qs.filter(ot_number__isnull=False, ot_status=1).count()
+        ots_cerrados = notices_qs.filter(ot_number__isnull=False, ot_status=2).count()
+        avisos_abiertos = notices_qs.filter(ot_number__isnull=True, status=1).count()
+        avisos_cerrados = notices_qs.filter(ot_number__isnull=True, status=2).count()
+
+        avisos_ot_cerr_ab = [
+            {"name": "OTs", "abierto": ots_abiertos, "cerrado": ots_cerrados},
+            {"name": "Avisos", "abierto": avisos_abiertos, "cerrado": avisos_cerrados}
+        ]
+
+        data = {
+            "status": "success",
+            "message": "Dashboard data retrieved successfully",
+            "data": {
+                "equipPie": equip_pie,
+                "condCompPercentage": cond_comp_percentage,
+                "cumplimiento": cumplimiento,
+                "eqMonitoreo": eq_monitoreo,
+                "noProgramWorks": no_program_works,
+                "avisosOt": avisos_ot,
+                "avisosOtCerrAb": avisos_ot_cerr_ab
+            }
+        }
+
+        return Response(data, status=status.HTTP_200_OK)

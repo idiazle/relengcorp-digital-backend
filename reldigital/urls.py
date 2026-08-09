@@ -17,6 +17,7 @@ from .views import (
     NoticesByReportApiView,
     EquipmentConditionSummaryAPIView,
     EquipmentConditionByMonthAPIView,
+    DashboardStatsAPIView,
 )
 
 app_name = 'reldigital'
@@ -53,4 +54,5 @@ urlpatterns = [
     path('notices-by-report/<int:pk>', NoticesByReportApiView.as_view(), name='notices-by-report'),
     path('summary-conditions', EquipmentConditionSummaryAPIView.as_view(), name='summary-conditions'),
     path('equipments/conditions-by-month', EquipmentConditionByMonthAPIView.as_view(), name='conditions-by-month'),
+    path('dashboard-stats', DashboardStatsAPIView.as_view(), name='dashboard-stats'),
 ]
