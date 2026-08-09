@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'drf_spectacular',
     'reldigital'
 ]
 
@@ -79,16 +78,20 @@ WSGI_APPLICATION = 'coredigital.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+#    'default': {
+#        'ENGINE': 'mssql',
+#        'NAME': 'dp_reldigital',
+#        'USER': 'sa',
+#        'PASSWORD': 'Admin_123',
+#        'HOST': 'localhost',
+#        'PORT': '1433',
+#        'OPTIONS': {
+#            'driver': 'ODBC Driver 17 for SQL Server'
+#        }
+#    }
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'dp_reldigital',
-        'USER': 'sa',
-        'PASSWORD': 'Admin_123',
-        'HOST': 'localhost',
-        'PORT': '1433',
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server'
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
     # 'default': {
     #     'ENGINE': 'mssql',
@@ -176,60 +179,6 @@ REST_FRAMEWORK = {
     'UNICODE_JSON': True,
     'COMPACT_JSON': False,
     'COERCE_DECIMAL_TO_STRING': False,
-    
-    # Documentación API con drf-spectacular
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-
-# Spectacular Settings (Documentación API)
-# https://drf-spectacular.readthedocs.io/en/latest/settings.html
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'RelengCorp Digital API',
-    'DESCRIPTION': 'API para gestión de mantenimiento predictivo y reportes de equipos industriales',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    
-    # Información de contacto
-    'CONTACT': {
-        'name': 'RelengCorp Digital',
-        'email': 'soporte@relengcorp.com',
-    },
-    
-    # Licencia
-    'LICENSE': {
-        'name': 'Propietario',
-    },
-    
-    # Términos de servicio
-    'TERMS_OF_SERVICE': None,
-    
-    # Configuración de la UI
-    'SWAGGER_UI_SETTINGS': {
-        'deepLinking': True,
-        'persistAuthorization': True,
-        'displayOperationId': True,
-        'filter': True,
-    },
-    
-    # Componentes de seguridad (para cuando se implemente auth)
-    'COMPONENT_SPLIT_REQUEST': True,
-    'SCHEMA_PATH_PREFIX': '/api/',
-    'SCHEMA_PATH_PREFIX_TRIM': True,
-    
-    # Personalización
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
-    'SERVE_AUTHENTICATION': None,
-    
-    # Tags personalizados
-    'TAGS': [
-        {'name': 'Auth', 'description': 'Autenticación y sesión de usuario'},
-        {'name': 'Users', 'description': 'Gestión de usuarios del sistema'},
-        {'name': 'Entities', 'description': 'Gestión de entidades (plantas, áreas, rutas, equipos, items, componentes)'},
-        {'name': 'Reports', 'description': 'Gestión de reportes de mantenimiento'},
-        {'name': 'Notices', 'description': 'Gestión de avisos y órdenes de trabajo'},
-        {'name': 'Analytics', 'description': 'Endpoints de análisis y estadísticas'},
-    ],
 }
 
 # JWT Configuration
